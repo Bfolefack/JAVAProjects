@@ -1,0 +1,22 @@
+import java.util.Scanner;
+
+class BoxMaker{
+	
+	public static void main(String[] Args){
+		int width;
+		int height;
+		char character;
+		boolean filled;
+		
+		Scanner scanner = new Scanner(System.in);
+		width = scanner.nextInt();
+		scanner = new Scanner(System.in);
+		height = scanner.nextInt();
+		scanner = new Scanner(System.in);
+		character = scanner.nextLine();
+		scanner = new Scanner(System.in);
+		filled = scanner.nextBool();
+		
+	}
+	
+}

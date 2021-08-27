@@ -1,0 +1,43 @@
+Weapon(Blade)
+Weapon(Blunt)
+Weapon(Stabby)
+Weapon(Unusual)
+Claws
+Horns
+Bite(Beak)
+Bite(Teeth)
+Slashing
+Slam
+Swallow
+Tail Attack
+Charming Attack
+Charge
+Charge-up Attack
+Kick
+Tendril/Tentacle/Pseudopod
+Elemental Attack/Breath Weapon
+Healing
+Ranged
+Constrict
+Life Drain
+Elemental Beam
+Projectile
+Spit
+Lick
+Ability Rays
+Body Attack
+Stomp
+Wing Attack
+Elemental Breath
+Grapple
+Restrain
+Ability Bite
+Ability Weapon
+Ability Tail
+Crush
+Improvised Weapons
+Elemental Orb
+Punch
+Ability Attack
+Sting
+Elemental Spell

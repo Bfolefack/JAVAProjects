@@ -1,0 +1,85 @@
+Keen Smell
+Keen Sight
+Keen Hearing
+Tremorsense
+Truesight
+Prophetic
+Camouflage
+Dazzling(+Cha)
+Disgusting(-Cha)
+Captain
+Shapechanging
+Lycanthropic
+Chimera(Multiple bases)
+Strong
+Sneaky
+Spellcaster
+Skeleton
+Horrifying(Fear)
+Armored
+Intelligent
+Elemental Body
+Formless
+Teleporting
+Luminescent
+Invisible
+Furry
+Scaled
+Regenerating
+Vital(2x HP)
+Bloodlust
+Multiplying
+Exploding
+Burrowing
+Mind Warping
+Flying
+Climbing
+Incorporeal
+Hovering
+Planeswalker
+Taunting
+Hardening
+Gravitational
+Extra Limbs(Arms)
+Extra Limbs(Head)
+Extra Limbs(Other)
+Tailed
+Slimy(Sticky)
+Unstable
+Levitating
+Vampiric
+Cursing
+Blessing
+Magical
+Petrifying
+Gaze
+Flyby
+Death Burst
+Grappling
+Legendary Resistance
+Light Sensitivity
+Magical Weapons
+Leaping
+Relentless
+Invisibility
+Siege Monseter
+Stench
+Harmful Body
+Tunneling
+Wounded Fury
+Echolocation
+Zombie
+Slimy(Slippery)
+Telepathic
+Mind Reading
+Telekinetic
+Ambusher
+Multiattack
+Multiattack
+Multiattack
+Multiattack
+Multiattack
+Multiattack
+Multiattack
+Multiattack
+Multiattack

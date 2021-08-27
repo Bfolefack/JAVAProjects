@@ -1,0 +1,134 @@
+public class Network {
+
+
+
+  int inputNum, hiddenSize, hiddenLayers, outputNum;
+  float learningRate;
+  float error;
+  Matrix[] weights;
+  Matrix[] bias;
+
+
+
+  Network(int _i, int _hs, int _o, int _hl, float _lr) {
+
+    inputNum = _i;
+    outputNum = _o;
+    hiddenSize = _hs;
+    hiddenLayers = _hl;
+    learningRate = _lr;
+
+
+    weights = new Matrix[hiddenLayers + 1];
+    weights[0] = new Matrix(hiddenSize, inputNum);
+    weights[0].randomize();
+    for (int i = 1; i < weights.length - 1; i++) {
+      weights[i] = new Matrix(hiddenSize, hiddenSize);
+      weights[i].randomize();
+    }
+    weights[weights.length - 1] = new Matrix(outputNum, hiddenSize);
+    weights[weights.length - 1].randomize();
+
+
+    bias = new Matrix[weights.length];
+    for (int i = 0; i < bias.length - 1; i++) {
+      bias[i] = new Matrix(hiddenSize, 1);
+      bias[i].randomize();
+    }
+    bias[bias.length - 1] = new Matrix(outputNum, 1);
+    bias[bias.length - 1].randomize();
+  }
+
+
+
+  float[] guess(float[] inputArr) {
+    Matrix inputs = Matrix.fromArray(inputArr);
+    Matrix hidden = Matrix.multiply(weights[0], inputs);
+    hidden.sum(bias[0]);
+    hidden.activation();
+    for (int i = 1; i < weights.length; i ++) {
+      hidden = Matrix.multiply(weights[i], hidden);
+      hidden.sum(bias[i]);
+      hidden.activation();
+    }
+    return hidden.toArray();
+  }
+
+
+
+  void train(float[] inputArr, float[] targetsArray) {
+    if (inputArr.length != inputNum || targetsArray.length != outputNum) {
+      System.out.println("NETWORK TRAINING INCOMPATIBLE");
+      return;
+    }
+
+    Matrix[] hiddens = new Matrix[weights.length];
+
+    Matrix inputs = Matrix.fromArray(inputArr);
+    hiddens[0] = inputs;
+    Matrix outputs = Matrix.multiply(weights[0], inputs);
+    outputs.sum(bias[0]);
+    // outputs.print();
+    outputs.activation();
+
+    for (int i = 1; i < weights.length; i ++) {
+      hiddens[i] = outputs;
+      outputs = Matrix.multiply(weights[i], outputs);
+      outputs.sum(bias[i]);
+      //  outputs.print();
+      outputs.activation();
+    }
+    
+    Matrix targets = Matrix.fromArray(targetsArray);
+    Matrix outputError = Matrix.diff(targets, outputs);
+
+    Matrix[] errors = new Matrix[bias.length];
+    errors[errors.length - 1] = outputError;
+    error = outputError.getVal(0, 0);
+
+    Matrix[] gradients = new Matrix[bias.length];
+
+    for (int i = errors.length - 2; i >= 0; i--) {
+       Matrix traan = Matrix.transpose(weights[i + 1]);
+       errors[i] = Matrix.multiply(traan, errors[i + 1]);
+    }
+
+    for (int i = gradients.length - 1; i >= 0; i--) {
+      if(i == gradients.length - 1){
+         gradients[i] = Matrix.dActivation(outputs);
+      } else {    
+         gradients[i] = Matrix.dActivation(hiddens[i + 1]);
+      }
+      gradients[i].hadamard(errors[i]);
+      gradients[i].multiply(learningRate);
+
+      Matrix delta = Matrix.multiply(gradients[i], Matrix.transpose(hiddens[i]));
+
+      weights[i].sum(delta);
+      bias[i].sum(gradients[i]);
+    }
+  }
+
+  void print() {
+    System.out.println("weights:");
+    for (Matrix m : weights) {
+      m.print();
+    }
+
+    System.out.println("bias:");
+    for (Matrix m : bias) {
+      m.print();
+    }
+  }
+}
+
+//Line 86
+//     gradients[gradients.length - 1] = Matrix.dActivation(outputs);
+//     gradients[gradients.length - 1].hadamard(outputError);
+//     gradients[gradients.length - 1].multiply(learningRate);
+// 
+//     Matrix tran = Matrix.transpose(hiddens[hiddens.length - 1]);
+//     Matrix d = Matrix.multiply(gradients[gradients.length - 1], tran);
+// 
+//     weights[weights.length - 1].sum(d);
+//     bias[bias.length - 1].sum(gradients[gradients.length - 1]);
