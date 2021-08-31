@@ -66,6 +66,7 @@ public class Network {
 
     Matrix inputs = Matrix.fromArray(inputArr);
     hiddens[0] = inputs;
+    System.out.println(inputs);
     Matrix outputs = Matrix.multiply(weights[0], inputs);
     outputs.sum(bias[0]);
     // outputs.print();

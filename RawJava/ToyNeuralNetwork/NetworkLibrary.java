@@ -16,10 +16,10 @@ public class NetworkLibrary{
        new XORData(0, 1, 0f),
        new XORData(0, 0, 1f)
      };
-     for(int i = 0; i < 10000000; i++){
+     for(int i = 0; i < 100000; i++){
        int a = (int) Math.floor(Math.random() * 4);
        XORData d = data[a];
-       n.train(d.inputs, d.ans);
+       System.out.println(n.train(d.inputs, d.ans)[0]);
        //n.train(new float[]{1}, new float[]{0});
    }
      

@@ -3,6 +3,7 @@ public class Network {
   int input_nodes;
   int hidden_nodes;
   int output_nodes;
+  float error;
   
   Matrix weights_ih;
   Matrix weights_ho;
@@ -44,7 +45,7 @@ public class Network {
     return output.toArray();
   }
 
- void train(float[] input_array, float[] target_array) {
+ float[] train(float[] input_array, float[] target_array) {
     // Generating the Hidden Outputs
     Matrix inputs = Matrix.fromArray(input_array);
     Matrix hidden = Matrix.multiply(weights_ih, inputs);
@@ -69,6 +70,7 @@ public class Network {
     Matrix gradients = Matrix.dActivation(outputs);
     gradients.hadamard(output_errors);
     gradients.multiply(learning_rate);
+    error = output_errors.getVal(0, 0);
 
 
     // Calculate deltas
@@ -99,7 +101,8 @@ public class Network {
 
     // outputs.print();
     // targets.print();
-    // error.print();
+    //error.print();
+    return outputs.toArray();
   }
   
     void print() {

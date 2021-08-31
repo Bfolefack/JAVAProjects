@@ -17,10 +17,10 @@ public class NetworkLibrary{
     //    new XORData(0, 0, 0f)
     //  };
      CheckerData[] data2 = new CheckerData[]{
-      new CheckerData(0, 0, 0, 0, 1f),
-      new CheckerData(1, 0, 0, 0, 1f),
-      new CheckerData(0, 1, 0, 0, 1f),
-      new CheckerData(1, 1, 0, 0, 1f),
+      new CheckerData(0, 0, 0, 0, 0f),
+      new CheckerData(1, 0, 0, 0, 0f),
+      new CheckerData(0, 1, 0, 0, 0f),
+      new CheckerData(1, 1, 0, 0, 0f),
       new CheckerData(0, 0, 1, 0, 0f),
       new CheckerData(1, 0, 1, 0, 0f),
       new CheckerData(0, 1, 1, 0, 1f),

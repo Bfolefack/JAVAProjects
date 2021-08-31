@@ -80,7 +80,7 @@ class Matrix {
   //*******************************************************
   //FUNCTIONS FOR PRINTING MATRICIES
 
-  String parseString() {
+  public String toString() {
     String s = "";
     for (int i = 0; i < matrix.length; i++) {
       s += "[ ";
@@ -95,12 +95,12 @@ class Matrix {
     return s;
   }
 
-  void print() {
-    System.out.println(parseString());
+  public void print() {
+    System.out.println(toString());
   }
 
-  static void print(Matrix m) {
-    System.out.println(m.parseString());
+  public static void print(Matrix m) {
+    System.out.println(m.toString());
   }
 
 
@@ -115,7 +115,7 @@ class Matrix {
     }
   }
 
-  static Matrix randomize(int rows, int cols) {
+  public static Matrix randomize(int rows, int cols) {
     Matrix result = new Matrix(rows, cols);
     for(int i = 0; i < result.rows; i++){
       for(int j = 0; j < result.cols; j++){
@@ -314,7 +314,7 @@ class Matrix {
 
   //*******************************************************
   //FUNCTIONS FOR TRANSPOSITION OF MATRICIES
-  static Matrix transpose(Matrix m) {
+  public static Matrix transpose(Matrix m) {
     Matrix result = new Matrix(m.cols, m.rows);
     for(int i = 0; i < m.rows; i++){
       for(int j = 0; j < m.cols; j++){
@@ -326,7 +326,7 @@ class Matrix {
 
   //*******************************************************
   //FUNCTIONS FOR ACTIVATION OF MATRICIES
-  void activation() {
+  public void activation() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         matrix[i][j] = (float)(1/(1 + Math.exp(-matrix[i][j])));
@@ -335,7 +335,7 @@ class Matrix {
     }
   }
 
-  void dActivation() {
+  public void dActivation() {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         // matrix[i][j] = matrix[i][j] * (1 - matrix[i][j]);
@@ -344,7 +344,7 @@ class Matrix {
     }
   }
 
-  static Matrix activation(Matrix m) {
+  public static Matrix activation(Matrix m) {
     Matrix result = new Matrix(m.rows, m.cols);
     for (int i = 0; i < m.rows; i++) {
       for (int j = 0; j < m.cols; j++) {
@@ -355,7 +355,7 @@ class Matrix {
     return result;
   }
 
-  static Matrix dActivation(Matrix m) {
+  public static Matrix dActivation(Matrix m) {
     Matrix result = new Matrix(m.rows, m.cols);
     for (int i = 0; i < m.rows; i++) {
       for (int j = 0; j < m.cols; j++) {
@@ -368,14 +368,14 @@ class Matrix {
 
   //*******************************************************
   //FUNCTIONS FOR ARRAY CONVERSION OF MATRICIES
-  static Matrix fromArray(float[] f) {
+  public static Matrix fromArray(float[] f) {
     Matrix m = new Matrix(1, f.length);
     m.setVals(new float[][]{f});
     m = Matrix.transpose(m);
     return m;
   }
 
-  float[] toArray() {
+  public float[] toArray() {
     float[] f = new float[rows * cols];
     int count = 0;
     for (int i = 0; i < rows; i++) {
