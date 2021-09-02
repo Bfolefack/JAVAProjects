@@ -61,8 +61,12 @@ public class Network {
         }
         SimpleMatrix targets = matrixFromArr(targetsArray);
         SimpleMatrix outputError = targets.minus(outputs);
+        // outputError = outputError.elementMult(outputError).scale(0.5);
         error = avg(outputError);
-
+        // System.out.println(targets);
+        // System.out.println(outputs);
+        // System.out.println(outputError);
+        // System.out.println("\n\n");
         SimpleMatrix[] errors = new SimpleMatrix[biases.length];
         errors[errors.length - 1] = outputError;
 
@@ -117,8 +121,8 @@ public class Network {
     }
 
     private float[] matrixToArray(SimpleMatrix sm){
-        float[] temp = new float[sm.numCols()];
-        for(int i = 0; i < sm.numCols(); i++){
+        float[] temp = new float[sm.numRows()];
+        for(int i = 0; i < sm.numRows(); i++){
             temp[i] = (float) sm.get(i, 0);
         }
         return temp;

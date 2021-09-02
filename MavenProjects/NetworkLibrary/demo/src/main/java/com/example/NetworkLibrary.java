@@ -27,7 +27,7 @@ public class NetworkLibrary
         choices.add(1);
         choices.add(2);
         choices.add(3);
-        Network nn = new Network(2, 4, 1, 2, 0.01f);
+        Network nn = new Network(2, 2, 1, 2, 0.01f);
         for(int i = 0; i < 10000; i++){
             float avgError = 0;
             for(int j : choices){
