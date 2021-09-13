@@ -17,53 +17,58 @@ public class MergeSort
 	public static void mergeSort(int[] list)
 	{
 		passCount=0;
-		mergeSort(list, list.length);
+		mergeSort(list, 0, list.length);
+		System.out.println(passCount);
+		System.out.println("DONE!");
 		System.out.println(Arrays.toString(list));
 	}
 
-	private static void mergeSort( int[] list, int n)  //O( Log N )
+	private static void mergeSort( int[] list, int front, int back)  //O( Log N )
 	{
-		if(n < 2){
+		int mid = (back + front)/2;
+		if(front == mid){
+			//merge(list, front, back);
+			passCount++;
 			return;
 		}
-		int mid = n/2;
-		int[] l = new int[mid];
-		int[] r = new int[n - mid];
-
-		for(int i = 0; i < mid; i++){
-			l[i] = list[i];
-		}
-		for(int i = 0; i < mid; i++){
-			r[i] = list[mid + i];
-		}
-		mergeSort(l, mid);
-		mergeSort(r, n - mid);
-		System.out.println(Arrays.toString(list));
-		merge(list, l, r, mid, n - mid);
+		mergeSort(list, front, mid);
+		mergeSort(list, mid, back);
+		merge(list, front, back);
 	}
 
-	private static void merge(int[] list, int[] l, int[] r, int)  //O(N)
+	private static void merge(int[] list, int front, int back)  //O(N)
 	{
-		int[] temp = new int[back - front];
-		int i = front;
-		int j = (front + back)/2;
-		int k = 0;
-		int  mid = j;
-		for(i = i; i < j; i++){
-			if(list[i] < list[j]){
-				temp[i] =  list[i];
-			} else {
-				temp[j] = list[j];
+		int mid = (front + back)/2;
+		int[] a = new int[mid - front];
+		for(int i = 0; i < mid - front; i++){
+			a[i] = list[front + i];
+		}
+		int[] b = new int[back - mid];
+		for(int i = mid; i < back; i++){
+			if(i < list.length){
+				b[i - mid] = list[i];
 			}
 		}
-		for(i = i; i < mid; i++){
-			temp[i] = list[i];
+		int[] temp = new int[back - front];
+		int aHead = 0;
+		int bHead = 0;
+		for(int i = 0; i < temp.length; i++){
+			if(bHead >= b.length){
+				temp[i] = a[aHead];
+				aHead++;
+			} else if(aHead >= a.length){
+				temp[i] = b[bHead];
+				bHead++;
+			} else if(a[aHead] < b[bHead]){
+				temp[i] = a[aHead];
+				aHead++;
+			} else {
+				temp[i] = b[bHead];
+				bHead++;
+			}
 		}
-		for(j = j; j < back; j++){
-			temp[j] = list[j];
-		}
-		for(int l = 0; l < temp.length; l++){
-			list[l] = temp[l];
+		for(int i = 0; i < temp.length; i++){
+			list[i + front] = temp[i];
 		}
 	}
 }
