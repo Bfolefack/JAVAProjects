@@ -35,6 +35,7 @@ public class World implements Serializable {
 
   public void display(){
     genChunks();
+    getPlayerChunk();
     player.update();
     player.display(this);
     sketch.translate(-player.pos.x, -player.pos.y);
@@ -62,6 +63,14 @@ public class World implements Serializable {
     }
   }
 
+  public void getPlayerChunk(){
+    int offX = (int) Math.round(((player.pos.x)%(64 * 10))/(64 * 10));
+    int offY = (int) Math.round(((player.pos.y)%(64 * 10))/(64 * 10));
+    sketch.fill(255, 0, 0);
+    sketch.ellipse((player.pos.x)%(64 * 10), (player.pos.y/2)%(64 * 10), 15, 15);
+    sketch.text(offX + "," + offY, 10, 40);
+    chunks[offX][offY].selected = true;
+  }
 
   public void setPlayer(Player p){
     player = p;

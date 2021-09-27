@@ -32,7 +32,10 @@ public class Player implements Serializable{
   }
 
   public void display(World w) {
+    w.sketch.fill(255, 0, 255);
     w.sketch.rect(w.sketch.width/2, w.sketch.height/2 - 30, 10, 30);
+    w.sketch.fill(0);
+    w.sketch.text(pos.x + "," + pos.y, 10, 20);
   }
   public void update() {
     floor = checkFloor();
@@ -69,6 +72,7 @@ public class Player implements Serializable{
 
   private float checkFloor() {
     PVector tempPos = PVector.div(pos, 10);
+    world.getPlayerChunk();
     //TODO: Figure out how to find the floor
     return pos.x;
   }

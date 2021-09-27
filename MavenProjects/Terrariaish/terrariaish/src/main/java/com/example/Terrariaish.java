@@ -31,6 +31,7 @@ public class Terrariaish extends PApplet implements Serializable{
 		// 	println(e);
 		// 	println("ur dum");
 		// }
+		textSize(20);
 		noStroke();
 		noiseSeed(123456789);
 		w = new World(this);
