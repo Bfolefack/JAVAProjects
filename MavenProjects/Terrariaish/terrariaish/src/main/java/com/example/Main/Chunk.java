@@ -21,7 +21,7 @@ class Chunk implements Serializable{
         if (w.sketch.noise(i * 0.005f) * 200 > j) {
           x = 0.5f;
         }
-        if (x < 0.55 && x > 0.45) {
+        if (x < 0.57 && x > 0.43) {
           t = "";
         } else {
           t = "f";
@@ -37,15 +37,15 @@ class Chunk implements Serializable{
     w.sketch.translate(chunkXPos * chunkSize * 10, chunkYPos * chunkSize * 10);
     for(int i = 0; i < chunkSize; i++){
       for(int j = 0; j < chunkSize; j++){
-        if(selected){
-          w.sketch.fill(255, 0, 0);
-        } else {
-          w.sketch.fill(125);
-        }
-        blocks[i][j].display(w);
+        w.sketch.fill(125);
+        // w.sketch.fill(255f * (chunkXPos % 3)/3f, 0, 255f * (chunkYPos % 3)/3f);
+        blocks[i][j].display(w); 
       }
     }
     w.sketch.fill(125);
+    w.sketch.fill(255);
+    w.sketch.textSize(100);
+    w.sketch.text(chunkXPos + "," + chunkYPos, 0, 100);
     w.sketch.popMatrix();
   }
 

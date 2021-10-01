@@ -5,12 +5,17 @@ import java.lang.Math;
 class StatRoller {
 	
 	public static void main(String[] args){
-		Scanner scan = new Scanner(System.in);
+		// Scanner scan = new Scanner(System.in);
 		System.out.println("How many arrays would you like to generate?");
-		int statCount = scan.nextInt();
-		for(int i = 0; i < statCount; i++){
-			System.out.println(statString());	
-		}
+		// int statCount = scan.nextInt();
+		System.out.println("David:" + statString());
+		System.out.println("Drew:" + statString());
+		System.out.println("Cooper:" + statString());
+		System.out.println("Peyton:" + statString());
+		System.out.println("That one Person:" + statString());
+		// for(int i = 0; i < statCount; i++){
+		// 	System.out.println(statString());	
+		// }
 	}
 	
 	static int generateStat(){
