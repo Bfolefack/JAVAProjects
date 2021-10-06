@@ -29,12 +29,12 @@ public class PartList
 			partsMap = new TreeMap<>();
 			while(file.hasNextLine()){
 				Part p = new Part(file.nextLine());
-				if(partsMap.get(p) == null){
-					partsMap.put(p, 1); 
-				} else {
-					partsMap.put(p, partsMap.get(p) + 1);
+					if(partsMap.get(p) == null){
+						partsMap.put(p, 1); 
+					} else {
+						partsMap.put(p, partsMap.get(p) + 1);
+					}
 				}
-			}
 		}
 		catch( IOException e )  //Most specific exceptions must be listed 1st
 		{

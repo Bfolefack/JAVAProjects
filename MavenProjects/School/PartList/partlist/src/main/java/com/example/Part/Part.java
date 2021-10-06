@@ -14,29 +14,36 @@ public class Part implements Comparable<Part>
 	public Part(String line) 
 	{
 		Scanner scan = new Scanner(line);
-		while(!scan.hasNextInt()){
+		while(!scan.hasNextInt() && scan.hasNext()){
 			scan.next();
 		}
-		String s = scan.nextInt() + "";
-		model  = line.substring(0, s.length() + line.indexOf(s));
-		while(!scan.hasNextInt()){
-			scan.next();
+		if(scan.hasNextInt()){
+			String s = scan.nextInt() + "";
+			model  = line.substring(0, s.length() + line.indexOf(s));
+			while(!scan.hasNextInt()){
+				scan.next();
+			}
+			year = scan.nextInt();
+			String y = year + "";
+			make = line.substring(s.length() + line.indexOf(s) + 1, line.indexOf(y) - 1);
 		}
-		year = scan.nextInt();
-		String y = year + "";
-		make = line.substring(s.length() + line.indexOf(s) + 1, line.indexOf(y) - 1);
 	}
 
 	//have to have compareTo if implements Comparable
 	public int compareTo( Part rhs )
 	{
-		if(make.compareTo(rhs.make) != 0){
-			return make.compareTo(rhs.make);
-		} else if(model.compareTo(rhs.model) != 0){
-			return model.compareTo(rhs.model);
-		} else {
-			return year.compareTo(rhs.year);
+		try {
+			if(make.compareTo(rhs.make) != 0){
+				return make.compareTo(rhs.make);
+			} else if(model.compareTo(rhs.model) != 0){
+				return model.compareTo(rhs.model);
+			} else {
+				return year.compareTo(rhs.year);
+			}
+		} catch (Exception e){
+			//TODO: deal with it later
 		}
+		return 0;
 	}
 
 	public String toString()

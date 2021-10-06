@@ -15,7 +15,7 @@ public class PartRunner
 {
 	public static void main(String[] args)
 	{
-		PartList prog = new PartList("partlist/src/main/java/com/example/Part/partinfo.dat");
+		PartList prog = new PartList("src/main/java/com/example/Part/partinfo.dat");
 		out.println(prog);
 	}
 }
