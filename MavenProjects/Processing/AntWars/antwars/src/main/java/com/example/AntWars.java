@@ -1,9 +1,10 @@
 package com.example;
 
 import processing.core.PApplet;
+import processing.event.MouseEvent;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.example.Objects.Agents.*;
 import com.example.Objects.Grid.Grid;
@@ -18,8 +19,11 @@ public class AntWars extends PApplet {
     public static int truMouseX;
     public static int truMouseY;
     public int seed;
-    public Set<Colony> colonies;
-    Grid farm;
+    public int gridScale;
+    private Set<Colony> colonies;
+    private Grid farm;
+    private Ant followerAnt;
+    private boolean showAnts;
     public static void main(String[] args) {
         String[] processingArgs = { "MySketch" };
         AntWars mySketch = new AntWars();
@@ -37,39 +41,36 @@ public class AntWars extends PApplet {
         if (seed == 0) {
             seed = (int) random(Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
-        colonies = new TreeSet<Colony>();
+        colonies = new HashSet<Colony>();
         randomSeed(seed);
         noiseSeed(seed);
-        farm = new Grid(1000, 1000, 0.45f, 0.025f);
+        farm = new Grid(100, 100, this,  0.45f, 0.025f);
         noStroke();
-        zoomer = new Zoom(1.0 / gridScale);
+        zoomer = new Zoomer(1.0f / gridScale, this);
     }
 
     public void draw() {
         background(155);
-        zoomer.pushZoom();
+        // zoomer.pushZoom();
         zoomer.mousePan();
         farm.display();
         farm.update();
         // for (int i = ants.size() - 1; i >= 0; i--) {
         // ants.get(i).setChunk(farm);
         // }
-        for (int i = ants.size() - 1; i >= 0; i--) {
-            if (showAnts)
-                ants.get(i).display();
-            ants.get(i).update(farm);
-        }
-        if (nest != null) {
-            nest.display(farm);
+        for(Colony c : colonies){
+            if(showAnts)
+                c.display(this);
+            c.update(this, farm);
         }
         if (followerAnt != null) {
             zoomer.xPan = followerAnt.pos.x * zoomer.scale;
             zoomer.yPan = followerAnt.pos.y * zoomer.scale;
         }
-        zoomer.popZoom();
+        // zoomer.popZoom();
     }
 
     public void mouseWheel(MouseEvent event) {
-        zoomer.mouseScale(event, 0.1);
+        zoomer.mouseScale(event, 0.1f);
     }
 }
