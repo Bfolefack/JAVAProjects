@@ -4,12 +4,10 @@ import com.example.AntWars;
 
 import processing.event.*;
 
-import processing.core.PApplet;
-
 public class Zoomer {
-    float scale;
-    float xPan;
-    float yPan;
+    public float scale;
+    public float xPan;
+    public float yPan;
     AntWars sketch;
 
     public Zoomer(float _s, AntWars p) {
@@ -33,16 +31,16 @@ public class Zoomer {
         }
     }
 
-    void pushZoom() {
-        sketch.truMouseX = (int) ((sketch.mouseX + xPan - sketch.width / 2) / scale);
-        sketch.truMouseY = (int) ((sketch.mouseY + yPan - sketch.height / 2) / scale);
+    public void pushZoom() {
+        AntWars.truMouseX = (int) ((sketch.mouseX + xPan - sketch.width / 2) / scale);
+        AntWars.truMouseY = (int) ((sketch.mouseY + yPan - sketch.height / 2) / scale);
         sketch.pushMatrix();
         sketch.translate(-xPan, -yPan);
         sketch.translate(sketch.width / 2, sketch.height / 2);
         sketch.scale(scale);
     }
 
-    void popZoom() {
+    public void popZoom() {
         sketch.popMatrix();
     }
 
@@ -61,7 +59,7 @@ public class Zoomer {
         }
     }
 
-    void mousePan() {
+    public void mousePan() {
         if (sketch.mousePressed) {
             xPan += (sketch.pmouseX - sketch.mouseX);
             yPan += (sketch.pmouseY - sketch.mouseY);
@@ -70,9 +68,8 @@ public class Zoomer {
 
     //
     // MUST BE PLACED INSIDE mouseWheel() METHOD
-    void mouseScale(MouseEvent event, float scaleScale) {
+    public void mouseScale(MouseEvent event, float scaleScale) {
         float scaleAmt = 1 + (scaleScale * event.getCount());
-
         scale *= scaleAmt;
         xPan *= scaleAmt;
         yPan *= scaleAmt;
