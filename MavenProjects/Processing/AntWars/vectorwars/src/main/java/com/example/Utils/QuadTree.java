@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.example.VectorWars;
 import com.example.Entities.Entity;
+import com.example.Entities.EntityType;
+import com.example.Entities.Stats.Barrier;
 
 import processing.core.PVector;
 
@@ -15,12 +17,14 @@ public class QuadTree {
     float w;
     float h;
     Set<Entity> entities;
+    Set<Barrier> barriers;
     QuadTree[] subdivisions;
     boolean divided;
 
     public QuadTree(int c, float w_, float h_) {
         capacity = c;
         entities = new HashSet<>();
+        barriers = new HashSet<>();
         x = 0;
         y = 0;
         w = w_;
@@ -30,6 +34,7 @@ public class QuadTree {
     private QuadTree(int c, float x_, float y_, float w_, float h_) {
         capacity = c;
         entities = new HashSet<>();
+        barriers = new HashSet<>();
         x = x_;
         y = y_;
         w = w_;
@@ -68,12 +73,37 @@ public class QuadTree {
         return total;
     }
 
+    public Set<Entity> getEntities(PVector pos, float r, EntityType et) {
+        Set<Entity> total = new HashSet<Entity>();
+        if (overlaps(pos, r)) {
+            for (Entity b : entities) {
+                float d = PVector.dist(b.pos, pos);
+                if (d < r && d > 0) {
+                    total.add(b);
+                }
+            }
+            if (divided) {
+                for (QuadTree qt : subdivisions) {
+                    total.addAll(qt.getEntities(pos, r));
+                }
+            }
+        }
+        return total;
+    }
+
     public void insert(Entity b) {
         if (!contains(b.pos)) {
             return;
         }
         if (entities.size() < capacity) {
             entities.add(b);
+            switch (b.type) {
+                case BARRIER:
+                    barriers.add((Barrier) b);
+                    break;
+                default:
+                    break;
+            }
             return;
         } else if (!divided) {
             subdivide();

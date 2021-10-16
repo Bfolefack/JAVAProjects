@@ -11,7 +11,7 @@ public class Zoomer {
     static VectorWars sketch;
     static boolean initialized;
 
-    public static void Zoomer(float _s, VectorWars p) {
+    public static void initialize(float _s, VectorWars p) {
         sketch = p;
         xPan = sketch.width / 2;
         yPan = sketch.height / 2;

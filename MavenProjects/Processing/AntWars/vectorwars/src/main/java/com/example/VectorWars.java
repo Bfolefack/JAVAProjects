@@ -25,8 +25,9 @@ public class VectorWars extends PApplet{
     public void setup(){
         fill(0);
         // noStroke();
-        Zoomer.Zoomer(0.1f, this);
-        w = new World(this, 1000, 1000);
+        frameRate(5000);
+        Zoomer.initialize(0.1f, this);
+        w = new World(this, 1000, 1000, 10);
     }
 
     public void draw(){
@@ -34,11 +35,12 @@ public class VectorWars extends PApplet{
         Zoomer.mousePan();
         Zoomer.pushZoom();
         w.display();
-        line(0, 0, 1000, 0);
-        line(0, 0, 0, 1000);
-        line(0, 1000, 1000, 1000);
-        line(1000, 0, 1000, 1000);
+        line(0, 0, 10000, 0);
+        line(0, 0, 0, 10000);
+        line(0, 10000, 10000, 10000);
+        line(10000, 0, 10000, 10000);
         Zoomer.popZoom();
+        text(frameRate, 0, 20);
     }
 
     public void mouseWheel(MouseEvent e){

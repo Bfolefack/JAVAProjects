@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import com.example.VectorWars;
+import com.example.Utils.QuadTree;
 
 import processing.core.PConstants;
 import processing.core.PVector;
@@ -16,14 +18,17 @@ public class World {
     VectorWars sketch;
     int width;
     int height;
+    float scale;
+    QuadTree Barriers;
     ArrayList<PVector> cave = new ArrayList<>();
     Set<ArrayList<PVector>> blocks = new HashSet<ArrayList<PVector>>();
     Set<Barrier> walls = new HashSet<Barrier>();
 
-    public World(VectorWars vw, int w, int h) {
+    public World(VectorWars vw, int w, int h, float s) {
         width = w;
         height = h;
         sketch = vw;
+        scale = s; 
         Map<Integer, Map<Integer, Cell>> grid = new HashMap<Integer, Map<Integer, Cell>>();
         for (int i = 0; i < width; i++) {
             grid.put(i, new HashMap<Integer, Cell>());
@@ -103,6 +108,15 @@ public class World {
         for(Set<Cell> c : caverns){
             blocks.add(checkBorders(c, grid));
         }
+        Barriers = new QuadTree(4, width * scale, height * scale);
+        for(PVector p : cave){
+            Barriers.insert(new Barrier(p.x, p.y));
+        }
+        for(ArrayList<PVector> pv : blocks){
+            for (PVector p : pv){
+                Barriers.insert(new Barrier(p.x, p.y));
+            }
+        }
     }
 
     private ArrayList<PVector> checkBorders(Set<Cell> cells, Map<Integer, Map<Integer, Cell>> grid) {
@@ -138,7 +152,7 @@ public class World {
 
         ArrayList<PVector> p = new ArrayList<>();
         for(Cell c : orderedWall){
-            p.add(new PVector(c.xPos, c.yPos));
+            p.add(new PVector(c.xPos * scale, c.yPos * scale));
         }
 
         return p;
@@ -199,11 +213,13 @@ public class World {
     }
 
     public void display() {
+        sketch.noStroke();
+        sketch.fill(0);
         sketch.beginShape();
-        sketch.vertex(0, 1000);
-        sketch.vertex(1000, 1000);
-        sketch.vertex(1000, 0);
-        sketch.vertex(0, 0);
+        sketch.vertex(0 * scale, 1000 * scale);
+        sketch.vertex(1000 * scale, 1000 * scale);
+        sketch.vertex(1000 * scale, 0 * scale);
+        sketch.vertex(0 * scale, 0 * scale);
         sketch.beginContour();
         for(PVector p : cave){
             sketch.vertex(p.x, p.y);
@@ -219,5 +235,8 @@ public class World {
             sketch.endShape(PConstants.CLOSE);
         }
         
+        sketch.stroke(255);
+        sketch.noFill();
+        // Barriers.display(sketch);        
     }
 }
