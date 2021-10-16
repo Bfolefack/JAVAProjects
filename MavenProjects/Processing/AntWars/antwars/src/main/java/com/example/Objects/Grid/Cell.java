@@ -23,8 +23,8 @@ public class Cell {
             for (int j = -1; j < 2; j++) {
                 if (i != 0 || j != 0) {
                     Cell c = grid.getCell(xPos + i, yPos + j);
-                    if(c != null){
-                        if (c.ID == 0) {
+                    if (c != null) {
+                        if (c.ID == 0 && c.state != CellStates.FILLED) {
                             c.ID = id2;
                             nextActive.add(c);
                         }
@@ -34,13 +34,13 @@ public class Cell {
         }
     }
 
-    public void update(AntWars aw) {
+    public void update(AntWars aw, Set<Cell> nextActiveCells) {
         switch (state) {
             case FILLED:
-            currColor = aw.color(0);
+                currColor = aw.color(0);
                 break;
             case FOOD:
-            currColor = aw.color(0, 255, 0);
+                currColor = aw.color(0, 255, 0);
                 break;
             case EMPTY:
                 currColor = aw.color(255);
@@ -66,7 +66,8 @@ public class Cell {
             }
         }
         if (neighbors < 3) {
-            state = CellStates.EMPTY;
+            if (state == CellStates.FILLED)
+                state = CellStates.EMPTY;
         } else if (neighbors > 4) {
             state = CellStates.FILLED;
         }
@@ -89,7 +90,9 @@ public class Cell {
             }
         }
         if (neighbors < 4) {
-            state = CellStates.EMPTY;
+            if (state == CellStates.FILLED) {
+                state = CellStates.EMPTY;
+            }
         }
     }
 }

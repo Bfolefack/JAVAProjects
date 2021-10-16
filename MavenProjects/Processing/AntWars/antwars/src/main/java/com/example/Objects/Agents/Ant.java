@@ -4,6 +4,6 @@ import processing.core.PVector;
 
 public class Ant {
 
-    public PVector pos;
+    public PVector pos, vel, acc;
     
 }

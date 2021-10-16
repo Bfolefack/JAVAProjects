@@ -1,5 +1,6 @@
 package com.example.Objects.Grid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,8 @@ import processing.core.PImage;
 public class Grid {
     Map<Integer, Map<Integer, Cell>> grid;
     Set<Ant> ants;
+    Set<Cell> activeCells;
+    Set<Cell> nextActiveCells;
     PImage image;
     int gridWidth;
     int gridHeight;
@@ -30,6 +33,7 @@ public class Grid {
         shutterSpeed = 20;
         showFarm = true;
         gridScale = 10;
+        nextActiveCells = new HashSet<>();
 
         gridWidth = x;
         gridHeight = y;
@@ -50,21 +54,20 @@ public class Grid {
                 float noise = sketch.noise(i * sc, j * sc, (i * sc * 0.5f + j * sc * 0.5f));
                 if (noise < d) {
                     // if (noise(i * sc, j * sc) < 0.45 || noise(i * sc, j * sc) > 0.65) {
-                    grid.get(i).put(j, new Cell(i, j, CellStates.EMPTY));
-                } else {
                     grid.get(i).put(j, new Cell(i, j, CellStates.FILLED));
-                    if (noise > 0.625
-                            && sketch.noise(i * sc * 8, j * sc * 8, (i * sc * 0.5f * 8 + j * sc * 0.5f * 8)) < 0.4f) {
+                } else {
+                    grid.get(i).put(j, new Cell(i, j, CellStates.EMPTY));
+                    if (noise > d + 0.15 && sketch.noise(i * sc * 8, j * sc * 8, (i * sc * 0.5f * 8 + j * sc * 0.5f * 8)) < 0.37f) {
                         grid.get(i).put(j, new Cell(i, j, CellStates.FOOD));
                     }
                 }
             }
         }
         buildCave();
-        Set<HashSet<Cell>> caverns = new HashSet<HashSet<Cell>>();
+        ArrayList<Set<Cell>> caverns = new ArrayList<Set<Cell>>();
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-                if (grid.get(i).get(j).state != CellStates.FILLED && grid.get(i).get(j).ID == 0) {
+                if (getCell(i, j).state != CellStates.FILLED && getCell(i, j).ID == 0) {
                     floodFill(i, j, caverns);
                 }
             }
@@ -83,7 +86,7 @@ public class Grid {
         }
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
-                getCell(i, j).update(sketch);
+                getCell(i, j).update(sketch, nextActiveCells);
             }
         }
     }
@@ -107,28 +110,18 @@ public class Grid {
         }
     }
 
-    // // for (int i = 0; i < gridWidth/20; i++) {
-    // // for (int j = 0; j < gridHeight/20; j++) {
-    // // chunks[i][j].clear();
-    // // }
-    // // }
-    // }
-
     public void update() {
-        for (int i : grid.keySet()) {
-            for (int j : grid.get(i).keySet()) {
-                Cell c = grid.get(i).get(j);
-                if (c.active) {
-                    c.update(sketch);
-                }
-            }
+        activeCells = nextActiveCells;
+        nextActiveCells = new HashSet<>();
+        for(Cell c : activeCells){
+            c.update(sketch, nextActiveCells);
         }
     }
 
-    void floodFill(int x, int y, Set<HashSet<Cell>> caverns) {
+    void floodFill(int x, int y, ArrayList<Set<Cell>> caverns) {
         Set<Cell> active = new HashSet<Cell>();
         Set<Cell> nextActive = new HashSet<Cell>();
-        HashSet<Cell> cavern = new HashSet<Cell>();
+        Set<Cell> cavern = new HashSet<Cell>();
         int id = (int) (Math.random() * Integer.MAX_VALUE);
         active.add(getCell(x, y));
         while (active.size() > 0) {
@@ -150,13 +143,13 @@ public class Grid {
                 tempCells.add(getCell(i, j));
             }
         }
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println(i);
             for (Cell c : tempCells) {
                 c.buildCave(this);
             }
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             System.out.println(i);
             for (Cell c : tempCells) {
                 c.smoothWalls(this);
