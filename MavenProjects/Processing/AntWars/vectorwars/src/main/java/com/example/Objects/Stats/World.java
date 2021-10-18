@@ -1,4 +1,4 @@
-package com.example.Entities.Stats;
+package com.example.Objects.Stats;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 
 import com.example.VectorWars;
+import com.example.Objects.Entity;
 import com.example.Utils.QuadTree;
 
 import processing.core.PConstants;
@@ -210,6 +211,10 @@ public class World {
         if (grid.get((int) x) != null)
             return grid.get((int) x).get((int) y);
         return null;
+    }
+
+    public Set<Entity> getBarriers(PVector p, float r){
+        return Barriers.getEntities(p, r);
     }
 
     public void display() {

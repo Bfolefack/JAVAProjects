@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.example.VectorWars;
-import com.example.Entities.Entity;
-import com.example.Entities.EntityType;
-import com.example.Entities.Stats.Barrier;
+import com.example.Objects.Entity;
+import com.example.Objects.EntityType;
+import com.example.Objects.Stats.Barrier;
 
 import processing.core.PVector;
 
@@ -56,24 +56,6 @@ public class QuadTree {
     }
 
     public Set<Entity> getEntities(PVector pos, float r) {
-        Set<Entity> total = new HashSet<Entity>();
-        if (overlaps(pos, r)) {
-            for (Entity b : entities) {
-                float d = PVector.dist(b.pos, pos);
-                if (d < r && d > 0) {
-                    total.add(b);
-                }
-            }
-            if (divided) {
-                for (QuadTree qt : subdivisions) {
-                    total.addAll(qt.getEntities(pos, r));
-                }
-            }
-        }
-        return total;
-    }
-
-    public Set<Entity> getEntities(PVector pos, float r, EntityType et) {
         Set<Entity> total = new HashSet<Entity>();
         if (overlaps(pos, r)) {
             for (Entity b : entities) {

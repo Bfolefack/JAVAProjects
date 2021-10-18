@@ -1,7 +1,7 @@
-package com.example.Entities.Stats;
+package com.example.Objects.Stats;
 
-import com.example.Entities.Entity;
-import com.example.Entities.EntityType;
+import com.example.Objects.Entity;
+import com.example.Objects.EntityType;
 
 public class Barrier extends Entity {
 

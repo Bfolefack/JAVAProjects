@@ -6,7 +6,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>vectorwars</artifactId>
-  <version>0.01</version>
+  <version>0.0.1</version>
 
   <name>vectorwars</name>
   <!-- FIXME change it to the project's website -->

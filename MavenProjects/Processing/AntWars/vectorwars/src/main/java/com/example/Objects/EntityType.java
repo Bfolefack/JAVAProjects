@@ -1,4 +1,4 @@
-package com.example.Entities;
+package com.example.Objects;
 
 public enum EntityType {
     BARRIER
