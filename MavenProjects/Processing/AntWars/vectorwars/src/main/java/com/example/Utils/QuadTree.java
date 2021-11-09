@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.example.VectorWars;
 import com.example.Objects.Entity;
-import com.example.Objects.EntityType;
 import com.example.Objects.Stats.Barrier;
 
 import processing.core.PVector;
@@ -17,24 +16,23 @@ public class QuadTree {
     float w;
     float h;
     Set<Entity> entities;
-    Set<Barrier> barriers;
     QuadTree[] subdivisions;
+    boolean parent;
     boolean divided;
 
     public QuadTree(int c, float w_, float h_) {
         capacity = c;
         entities = new HashSet<>();
-        barriers = new HashSet<>();
         x = 0;
         y = 0;
         w = w_;
         h = h_;
+        parent = true;
     }
 
     private QuadTree(int c, float x_, float y_, float w_, float h_) {
         capacity = c;
         entities = new HashSet<>();
-        barriers = new HashSet<>();
         x = x_;
         y = y_;
         w = w_;
@@ -43,11 +41,6 @@ public class QuadTree {
 
     public void display(VectorWars sketch) {
         sketch.strokeWeight(w / 100);
-        // if(overlaps(new PVector(sketch.mouseX, sketch.mouseY), 100)){
-        // sketch.stroke(0, 255, 0);
-        // } else {
-        // sketch.stroke(0);
-        // }
         sketch.rect(x, y, w, h);
         if (divided)
             for (QuadTree qt : subdivisions) {
@@ -79,21 +72,56 @@ public class QuadTree {
         }
         if (entities.size() < capacity) {
             entities.add(b);
-            switch (b.type) {
-                case BARRIER:
-                    barriers.add((Barrier) b);
-                    break;
-                default:
-                    break;
-            }
-            return;
         } else if (!divided) {
             subdivide();
             divided = true;
+        } else {
+            for (QuadTree qt : subdivisions) {
+                qt.insert(b);
+            }
         }
-        for (QuadTree qt : subdivisions) {
-            qt.insert(b);
+    }
+
+    public boolean remove(Entity e) {
+        Boolean checkMerge = false;
+        if (entities.remove(e)) {
+            return true;
+        } else if (divided) {
+            for (QuadTree qt : subdivisions) {
+                checkMerge = qt.remove(e);
+                if (checkMerge) {
+                    break;
+                }
+            }
+            if (checkMerge) {
+                boolean merge = false;
+                for (QuadTree qt : subdivisions) {
+                    if (!qt.checkFilled()) {
+                        merge = true;
+                    }
+                }
+                if (merge) {
+                    subdivisions = null;
+                    divided = false;
+                }
+            }
         }
+        return false;
+    }
+
+    private boolean checkFilled() {
+        if(entities.size() > 0){
+            return true;
+        }
+        if (divided) {
+            for (QuadTree qt : subdivisions) {
+                boolean b;
+                if (!qt.checkFilled()) {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean contains(PVector pos) {
@@ -122,5 +150,18 @@ public class QuadTree {
         float Dx = Xn - pos.x;
         float Dy = Yn - pos.y;
         return (Dx * Dx + Dy * Dy) <= r * r;
+    }
+
+    public Set<Entity> getAll(Set<Entity> e) {
+        e.addAll(entities);
+        if (divided) {
+            for (QuadTree q : subdivisions) {
+                q.getAll(e);
+            }
+        }
+        if (parent)
+            return e;
+        else
+            return null;
     }
 }

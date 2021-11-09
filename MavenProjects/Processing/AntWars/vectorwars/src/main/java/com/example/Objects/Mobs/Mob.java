@@ -210,7 +210,7 @@ public class Mob extends Entity {
         PVector total = new PVector();
         for (PVector p : target) {
             if (PVector.dist(pos, p) < range)
-                total.add(seekSteer(p));
+                total.add(avoidSteer(p));
         }
         if (target.size() > 0) {
             total.div(target.size());
@@ -237,6 +237,24 @@ public class Mob extends Entity {
         // System.out.println(seek(vec));
         // System.out.println();
         return seekSteer(vec);
+    }
+
+    public Set<Entity> withinAngle(Set<Entity> in, float f){
+        Set<Entity> out = new HashSet<Entity>();
+        for(Entity e : in){
+            if(getAngle(e.pos) > f){
+                out.add(e);
+            }
+        }
+        return out;
+    }
+
+    protected float getAngle(PVector pos2) {
+        PVector diff = PVector.sub(pos2, pos);
+        PVector tempVel = vel;
+        diff.normalize();
+        tempVel.normalize();
+        return PVector.dot(diff, tempVel);
     }
 
     protected void update() {

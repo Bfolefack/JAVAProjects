@@ -31,33 +31,52 @@ public class VectorWars extends PApplet{
     public void setup(){
         fill(0);
         // noStroke();
-        frameRate(60);
-        Zoomer.initialize(0.1f, this);
-        w = new World(this, 1000, 1000, 10);
+        frameRate(144);
+        w = new World(this, 1000, 1000, 20);
+        Zoomer.initialize(width/(w.width * w.scale), this);
     }
 
     public void draw(){
         background(125);
         Zoomer.mousePan();
         Zoomer.pushZoom();
+        strokeWeight(0.1f);
         w.display();
-        line(0, 0, 10000, 0);
-        line(0, 0, 0, 10000);
-        line(0, 10000, 10000, 10000);
-        line(10000, 0, 10000, 10000);
+        if(keyPressed && key == 'a'){
+            ants.add(new Ant(truMouseX, truMouseY, 5, 2f, 0.95f, 999999999, w));
+        }
         for(Ant a : ants){
             a.update(this);
             a.display(this);
         }
         Zoomer.popZoom();
-        if(keyPressed && key == 'a'){
-            ants.add(new Ant(truMouseX, truMouseY, 10, 2, 0.95f, 999999999, w));
-        }
         text(frameRate, 0, 20);
     }
 
     public void mouseWheel(MouseEvent e){
         Zoomer.mouseScale(e, 0.05f);
+    }
+
+    public void keyPressed(){
+        if(key == 'f' || key == 'F'){
+            w.flipped = !w.flipped;
+        }
+        if(key == 'r' || key == 'R'){
+            Zoomer.initialize(width/(w.width * w.scale), this);
+        }
+        if(key == ','){
+            if(frameRate > 60){
+                frameRate(60 * 0.8f);
+            } else {
+                frameRate(frameRate * 0.8f);
+            }
+        } else if (key == '.'){
+            if(frameRate > 60){
+                frameRate(60 * 1.2f);
+            } else {
+                frameRate(frameRate * 1.2f);
+            }
+        }
     }
 
 }
