@@ -7,12 +7,7 @@ import com.example.AStar;
 
 import processing.core.PVector;
 
-import static com.example.Utils.QuadTree.Direction.LEFT;
-import static com.example.Utils.QuadTree.Direction.RIGHT;
-import static com.example.Utils.QuadTree.Direction.UP;
-import static com.example.Utils.QuadTree.Direction.DOWN;
-
-public class QuadTree {
+public class GridQuadTree {
 
     public static int count = 0;
     int capacity;
@@ -21,19 +16,19 @@ public class QuadTree {
     int w;
     int h;
     float value;
-    QuadTree parentTree;
-    QuadTree[] subdivisions;
+    GridQuadTree parentTree;
+    GridQuadTree[] subdivisions;
     float[][] grid;
     boolean parent;
     boolean divided;
 
-    public QuadTree(float[][] g) {
+    public GridQuadTree(float[][] g) {
         x = 0;
         y = 0;
         grid = g.clone();
         for (int i = 0; i < g.length; i++) {
             for (int j = 0; j < g[0].length; j++) {
-                if(g[i][j] < 0.4){
+                if (g[i][j] < 0.4) {
                     g[i][j] = 1;
                 } else {
                     g[i][j] += 1;
@@ -46,14 +41,14 @@ public class QuadTree {
         parent = true;
     }
 
-    private QuadTree(float[][] g, int x_, int y_, int corn1, int corn2, QuadTree pt) {
+    private GridQuadTree(float[][] g, int x_, int y_, int corn1, int corn2, GridQuadTree pt) {
         count++;
         x = x_;
         y = y_;
-        w = g.length/2;
-        h = g[0].length/2;
+        w = g.length / 2;
+        h = g[0].length / 2;
         parentTree = pt;
-        grid = new float[g.length/2][g[0].length/2];
+        grid = new float[g.length / 2][g[0].length / 2];
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 try {
@@ -69,7 +64,7 @@ public class QuadTree {
         sketch.strokeWeight(w / 100f);
         sketch.rect(x, y, w, h);
         if (divided)
-            for (QuadTree qt : subdivisions) {
+            for (GridQuadTree qt : subdivisions) {
                 qt.display(sketch);
             }
     }
@@ -92,32 +87,32 @@ public class QuadTree {
         float avg = 0;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                avg += grid[i][j];
+                    avg += grid[i][j];
             }
         }
-        avg/=(grid.length * grid[0].length);
+        avg /= (grid.length * grid[0].length);
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                if(Math.abs(avg - grid[i][j]) > 0.02){
-                    subdivisions = new QuadTree[4];
+                if (Math.abs(avg - grid[i][j]) > 0.02) {
+                    subdivisions = new GridQuadTree[4];
                     // northwest
-                    subdivisions[0] = new QuadTree(grid, x, y, 0, 0, this);
+                    subdivisions[0] = new GridQuadTree(grid, x, y, 0, 0, this);
                     // northeast
-                    subdivisions[1] = new QuadTree(grid, x + (w / 2), y, 1, 0, this);
+                    subdivisions[1] = new GridQuadTree(grid, x + (w / 2), y, 1, 0, this);
                     // southwest
-                    subdivisions[2] = new QuadTree(grid, x, y + (h / 2), 0, 1, this);
+                    subdivisions[2] = new GridQuadTree(grid, x, y + (h / 2), 0, 1, this);
                     // southeast
-                    subdivisions[3] = new QuadTree(grid, x + (w / 2), y + (h / 2), 1, 1, this);
+                    subdivisions[3] = new GridQuadTree(grid, x + (w / 2), y + (h / 2), 1, 1, this);
                     value = -1;
                     divided = true;
-                    for(QuadTree qt : subdivisions){
+                    for (GridQuadTree qt : subdivisions) {
                         qt.subdivide();
                     }
                     return;
                 }
             }
         }
-        value = avg; 
+        value = avg;
         divided = false;
     }
 
@@ -141,39 +136,5 @@ public class QuadTree {
             return grid;
         }
         return null;
-    }
-
-    
-    public enum Direction{
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN
-    }
-
-    public class DoubleDir implements Comparable<DoubleDir> {
-        Direction dir1;
-        Direction dir2;
-
-        DoubleDir(Direction d1, Direction d2){
-            dir1 = d1;
-            dir2 = d2;
-        }
-
-        @Override
-        public int compareTo(DoubleDir dd){
-            if((dd.dir1 == dir1 && dd.dir2 == dd.dir2) || (dd.dir2 == dir1 && dd.dir1 == dd.dir2)){
-                return 0;
-            }
-            return -1;
-        }
-
-        public boolean contains(Direction d){
-            if(dir1 == d || dir2 == d){
-                return true;
-            }
-            return false;
-        }
-
     }
 }
