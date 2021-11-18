@@ -25,21 +25,54 @@ public class Grid {
     float survivalMax;
     float kernelArea;
 
+    float mu;
+    float sigma;
+    float gaussCoefficient;
+
     public float[][] kernel;
 
     public Grid(float[][] values) {
         grid = values;
         width = values.length;
-
         height = values[0].length;
 
-        kernel = getConwayKernel(1, 2);
-        smooth = true;
+        // gameOfLife Defaults
+        // smooth = true;
+        // kernel = getConwayKernel(1, 2);
+        // survivalMin = 2/8f;
+        // birthMin = 3/8f;
+        // birthMax = 3/8f;
+        // survivalMax = 3/8f;
 
-        survivalMin = 2/8f;
-        birthMin = 3/8f;
-        birthMax = 3/8f;
-        survivalMax = 4/8f;
+        // smoothLife Defaults
+        // smooth = true;
+        // kernel = getConwayKernel(5, 10);
+        // survivalMin = 0.25f;
+        // birthMin = 0.3f;
+        // birthMax = 0.4f;
+        // survivalMax = 0.45f;
+
+        // smoothLife Defaults
+        // smooth = true;
+        // kernel = getConwayKernel(7, 10);
+        // survivalMin = 0.285f;
+        // birthMin = 0.315f;
+        // birthMax = 0.375f;
+        // survivalMax = 0.463f;
+
+        // Lenia Defaults
+        smooth = false;
+        mu = 0.34f;
+        sigma = 0.031f;
+        gaussCoefficient = 4.15f;
+        kernel = getLeniaKernel(2, 15);
+
+        // BEST LENIA
+        // smooth = false;
+        // mu = 0.36f;
+        // sigma = 0.03f;
+        // gaussCoefficient = 4;
+        // kernel = getLeniaKernel(3, 15);
 
         img = new PImage();
     }
@@ -53,10 +86,20 @@ public class Grid {
     }
 
     public void fillArea(int x, int y) {
-        for (int i = -10; i <= 10; i++) {
-            for (int j = -10; j <= 10; j++) {
-                PVector pv = getPixel(x + i, y + j);
-                grid[(int) pv.x][(int) pv.y] = 1;
+        if (smooth) {
+            for (int i = -20; i <= 20; i++) {
+                for (int j = -20; j <= 20; j++) {
+                    PVector pv = getPixel(x + i, y + j);
+                    grid[(int) pv.x][(int) pv.y] = (int) (Math.random() * 2);
+                }
+            }
+        } else {
+            int rad = 30;
+            for (int i = -rad; i <= rad; i++) {
+                for (int j = -rad; j <= rad; j++) {
+                    PVector pv = getPixel(x + i, y + j);
+                    grid[(int) pv.x][(int) pv.y] = (float)(Math.random());
+                }
             }
         }
     }
@@ -81,15 +124,19 @@ public class Grid {
                         sum += val;
                     }
                 }
-                // float gr = leniaGrowthMap(sum, kernelArea);
-                float gr = conwayGrowthMap(sum, kernelArea);
+                float gr;
+                if (smooth)
+                    gr = conwayGrowthMap(sum, kernelArea);
+                else
+                    gr = leniaGrowthMap(sum, PConstants.PI * 7.5f * 7.5f) * 0.1f;
                 float v = grid[i][j] + gr;
                 if (smooth) {
-                    if (v > 0.33) {
+                    if (v > 0) {
                         v = 1;
                     } else {
                         v = 0;
                     }
+                    v = (int) v;
                 } else {
                     if (v > 1) {
                         v = 1;
@@ -142,17 +189,17 @@ public class Grid {
         return new PVector(x, y);
     }
 
-    public float[][] getLeniaKernel(int radius) {
-        float[][] f = new float[radius * 2 + 2][radius * 2 + 2];
-        for (float r = 0; r < radius; r += 0.72) {
-            float g = gaussian(r / (radius * 0.5f));
+    public float[][] getLeniaKernel(int innerRadius, int outerRadius) {
+        float[][] f = new float[outerRadius * 2 + 1][outerRadius * 2 + 1];
+        for (float r = innerRadius; r < outerRadius; r += 0.72) {
+            float g = gaussian((r - innerRadius) / ((outerRadius - innerRadius)));
             for (int x = (int) -r; x <= r; x++) {
                 int y = (int) Math.sqrt((r * r) - (x * x));
 
-                f[x + radius][y + radius] = g;
-                f[x + radius][-y + radius] = g;
-                f[y + radius][x + radius] = g;
-                f[-y + radius][x + radius] = g;
+                f[x + outerRadius][y + outerRadius] = g;
+                f[x + outerRadius][-y + outerRadius] = g;
+                f[y + outerRadius][x + outerRadius] = g;
+                f[-y + outerRadius][x + outerRadius] = g;
             }
         }
         for (int i = 0; i < f.length; i++) {
@@ -185,27 +232,31 @@ public class Grid {
 
     public float leniaGrowthMap(float x, float divisor) {
         x /= divisor;
-        float mu = 0.14f;
-        float s = 0.03f;
-        return (2 * (float) Math.exp(-((x - mu) * (x - mu)) / (2 * s * s))) - 1;
+        // float mu = 0.14f;
+        // float sigma = 0.03f;
+        float l = Math.abs(x-mu);
+        float k = 2*(sigma*sigma);
+        return (2 * (float) Math.exp(-(l * l)/k) -  1);
     }
 
-    public float conwayGrowthMap(float x, float divisor){
-        float f = x/divisor;
-        if(f <= birthMax && f >= birthMin){
+    public float conwayGrowthMap(float x, float divisor) {
+        float f = x / divisor;
+        if (f > 0) {
+            int i = 1;
+        }
+        if (f <= birthMax && f >= birthMin) {
             return 1;
         }
-        if(f <= survivalMax && f >= survivalMin){
+        if (f <= survivalMax && f >= survivalMin) {
             return 0;
         }
         return -1;
     }
 
     public float gaussian(float x) {
-        float mu = 1f;
-        float sigma = 1 / 4f;
-        float g = (float) ((1 / (sigma * Math.sqrt(2 * PConstants.PI)))
-                * (Math.exp(-((x - mu) * (x - mu)) / (2 * sigma * sigma))));
+        // float g = (float) ((1 / (gaussSigma * Math.sqrt(2 * PConstants.PI)))
+        //         * (Math.exp(-((x - gaussMu) * (x - gaussMu)) / (2 * gaussSigma * gaussSigma))));
+        float g = (float) Math.exp(1-(1/((gaussCoefficient *x) * (1 - x))));
         return g;
     }
 }

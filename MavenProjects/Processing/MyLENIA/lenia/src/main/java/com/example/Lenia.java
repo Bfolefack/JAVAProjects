@@ -37,11 +37,11 @@ public class Lenia extends PApplet
     @Override
     public void setup(){
         ((PGraphicsOpenGL)g).textureSampling(3);
-        Zoomer.initialize(1, this);
+        Zoomer.initialize(3, this);
         float[][] f = new float[250][250];
         for(int i = 0; i < f.length ; i++){
             for (int j = 0; j < f[0].length; j++) {
-                f[i][j] = (float) Math.random() * 0.75f;
+                f[i][j] = (float) (Math.random() * 0);
             }
         }
         grid = new Grid(f);
