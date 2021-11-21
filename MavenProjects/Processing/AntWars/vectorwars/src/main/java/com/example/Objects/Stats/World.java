@@ -18,7 +18,7 @@ public class World {
     public int width;
     int height;
     public float scale;
-    QuadTree Barriers;
+    public QuadTree Barriers;
     public boolean flipped;
     // TODO: Remove This
     ArrayList<PVector> cave = new ArrayList<>();

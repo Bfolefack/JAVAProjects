@@ -14,7 +14,7 @@ public class Mob extends Entity {
     int randID;
     float maxSpeed, maxForce, friction;
 
-    public Mob(float x, float y, float ms, float mf, float f) {
+    protected Mob(float x, float y, float ms, float mf, float f) {
         super(x, y);
         vel = new PVector(0, 0);
         acc = new PVector(0, 0);
@@ -24,7 +24,7 @@ public class Mob extends Entity {
         randID = (int) (Math.random() * Integer.MAX_VALUE);
     }
 
-    public Mob(PVector p, float ms, float mf, float f) {
+    protected Mob(PVector p, float ms, float mf, float f) {
         super(p);
         vel = new PVector(0, 0);
         acc = new PVector(0, 0);
@@ -33,13 +33,13 @@ public class Mob extends Entity {
         friction = f;
     }
 
-    public PVector seek(PVector target) {
+    protected PVector seek(PVector target) {
         PVector vec = PVector.sub(pos, target);
         vec.normalize();
         return vec;
     }
 
-    public PVector seekSteer(PVector target) {
+    protected PVector seekSteer(PVector target) {
         PVector desired = PVector.sub(pos, target);
         float d = desired.mag();
         if (d < 20) {
@@ -53,7 +53,7 @@ public class Mob extends Entity {
         return steer;
     }
 
-    public PVector seekVec(Set<PVector> target) {
+    protected PVector seekVec(Set<PVector> target) {
         PVector total = new PVector();
         for (PVector p : target) {
             total.add(seek(p));
@@ -62,7 +62,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector seek(Set<Entity> target) {
+    protected PVector seek(Set<Entity> target) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -70,7 +70,7 @@ public class Mob extends Entity {
         return seekVec(p);
     }
 
-    public PVector seekVecSteer(Set<PVector> target) {
+    protected PVector seekVecSteer(Set<PVector> target) {
         PVector total = new PVector();
         for (PVector p : target) {
             total.add(seekSteer(p));
@@ -82,7 +82,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector seekSteer(Set<Entity> target) {
+    protected PVector seekSteer(Set<Entity> target) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -92,7 +92,7 @@ public class Mob extends Entity {
 
     
 
-    public PVector seekVec(Set<PVector> target, float range) {
+    protected PVector seekVec(Set<PVector> target, float range) {
         PVector total = new PVector();
         for (PVector p : target) {
             if (PVector.dist(pos, p) < range)
@@ -102,7 +102,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector seek(Set<Entity> target, float range) {
+    protected PVector seek(Set<Entity> target, float range) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -110,7 +110,7 @@ public class Mob extends Entity {
         return seekVecSteer(p, range);
     }
 
-    public PVector seekVecSteer(Set<PVector> target, float range) {
+    protected PVector seekVecSteer(Set<PVector> target, float range) {
         PVector total = new PVector();
         for (PVector p : target) {
             if (PVector.dist(pos, p) < range)
@@ -123,7 +123,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector seekSteer(Set<Entity> target, float range) {
+    protected PVector seekSteer(Set<Entity> target, float range) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -131,13 +131,13 @@ public class Mob extends Entity {
         return seekVecSteer(p, range);
     }
 
-    public PVector avoid(PVector target) {
+    protected PVector avoid(PVector target) {
         PVector vec = PVector.sub(target, pos);
         vec.normalize();
         return vec;
     }
 
-    public PVector avoidSteer(PVector target) {
+    protected PVector avoidSteer(PVector target) {
         PVector desired = PVector.sub(target, pos);
         float d = desired.mag();
         if (d < 20) {
@@ -151,7 +151,7 @@ public class Mob extends Entity {
         return steer;
     }
 
-    public PVector avoidVec(Set<PVector> target) {
+    protected PVector avoidVec(Set<PVector> target) {
         PVector total = new PVector();
         for (PVector p : target) {
             total.add(avoid(p));
@@ -160,7 +160,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector avoid(Set<Entity> target) {
+    protected PVector avoid(Set<Entity> target) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -168,7 +168,7 @@ public class Mob extends Entity {
         return avoidVec(p);
     }
 
-    public PVector avoidVecSteer(Set<PVector> target) {
+    protected PVector avoidVecSteer(Set<PVector> target) {
         PVector total = new PVector();
         for (PVector p : target) {
             total.add(avoidSteer(p));
@@ -180,7 +180,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector avoidSteer(Set<Entity> target) {
+    protected PVector avoidSteer(Set<Entity> target) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -188,7 +188,7 @@ public class Mob extends Entity {
         return avoidVecSteer(p);
     }
 
-    public PVector avoidVec(Set<PVector> target, float range) {
+    protected PVector avoidVec(Set<PVector> target, float range) {
         PVector total = new PVector();
         for (PVector p : target) {
             if (PVector.dist(pos, p) < range)
@@ -198,7 +198,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector avoid(Set<Entity> target, float range) {
+    protected PVector avoid(Set<Entity> target, float range) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -206,7 +206,7 @@ public class Mob extends Entity {
         return avoidVecSteer(p, range);
     }
 
-    public PVector avoidVecSteer(Set<PVector> target, float range) {
+    protected PVector avoidVecSteer(Set<PVector> target, float range) {
         PVector total = new PVector();
         for (PVector p : target) {
             if (PVector.dist(pos, p) < range)
@@ -219,7 +219,7 @@ public class Mob extends Entity {
         return total;
     }
 
-    public PVector avoidSteer(Set<Entity> target, float range) {
+    protected PVector avoidSteer(Set<Entity> target, float range) {
         Set<PVector> p = new HashSet<>();
         for(Entity e : target){
             p.add(e.pos);
@@ -227,7 +227,7 @@ public class Mob extends Entity {
         return avoidVecSteer(p, range);
     }
 
-    public PVector wander(PApplet sketch, float jitter, float strength) {
+    protected PVector wander(PApplet sketch, float jitter, float strength) {
         float f = (sketch.noise(randID, (sketch.frameCount * jitter)) * 2 - 1) * PApplet.TWO_PI;
         PVector vec = new PVector((float) Math.cos(f), (float) Math.sin(f));
         vec.setMag(strength);
@@ -239,7 +239,7 @@ public class Mob extends Entity {
         return seekSteer(vec);
     }
 
-    public Set<Entity> withinAngle(Set<Entity> in, float f){
+    protected Set<Entity> withinAngle(Set<Entity> in, float f){
         Set<Entity> out = new HashSet<Entity>();
         for(Entity e : in){
             if(getAngle(e.pos) > f){

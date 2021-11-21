@@ -46,7 +46,7 @@ public class Ant extends Mob {
         PVector avoid = avoidSteer(barriers, 30);
         // avoid = PVector.sub(vel, avoid);
         if (avoid.mag() > 0) {
-            acc.add(avoid.setMag(20));
+            acc.add(avoid.setMag(50));
             // super.update();
             // return;
         }
@@ -91,12 +91,8 @@ public class Ant extends Mob {
     }
 
     public void display(PApplet sketch) {
-        sketch.fill(toColor(colony, sketch));
+        // sketch.fill(toColor(colony, sketch));
         sketch.ellipse(pos.x, pos.y, 10, 10);
         sketch.line(pos.x, pos.y, pos.x + vel.x, pos.y + vel.y);
-    }
-
-    private int toColor(int col, PApplet pap) {
-        return pap.color((col / 1000000) * 0.255f, ((col % 1000000) / 1000) * 0.255f, (col % (1000)) * 0.255f);
     }
 }
