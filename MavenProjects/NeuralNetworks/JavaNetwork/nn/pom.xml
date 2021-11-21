@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example</groupId>
-  <artifactId>toyneuralnetwork</artifactId>
+  <artifactId>nn</artifactId>
   <version>0.0.1</version>
 
-  <name>toyneuralnetwork</name>
+  <name>nn</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -24,11 +24,6 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ejml</groupId>
-      <artifactId>ejml-all</artifactId>
-      <version>0.41</version>
     </dependency>
   </dependencies>
 

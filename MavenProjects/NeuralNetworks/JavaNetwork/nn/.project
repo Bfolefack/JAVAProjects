@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>toyneuralnetwork</name>
+	<name>nn</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,7 +22,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1630511230206</id>
+			<id>1637527500775</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
