@@ -1,8 +1,9 @@
 package com.example.Matrix;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Matrix {
+public class Matrix implements Serializable {
     float[][] data;
     int rows, cols;
 

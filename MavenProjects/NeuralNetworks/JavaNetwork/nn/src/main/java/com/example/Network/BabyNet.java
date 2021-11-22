@@ -23,7 +23,6 @@ public class BabyNet {
         Matrix output = Matrix.multiply(weights_ho, hidden);
         output.add(bias_o);
         output.sigmoid();
-
         return output.toArray();
     }
 
