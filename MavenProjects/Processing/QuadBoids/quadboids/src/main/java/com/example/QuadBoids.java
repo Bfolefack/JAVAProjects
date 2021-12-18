@@ -26,6 +26,7 @@ public class QuadBoids extends PApplet {
         flocks = new TreeMap<>();
         population = new Population(this);
         noStroke();
+        frameRate(144);
         // Boid b = new Boid(width/2, height/2,(int) (Math.random() * 1000000000), new
         // Population(this));
         // b.display(this);
@@ -48,11 +49,12 @@ public class QuadBoids extends PApplet {
                     population.method = 2;
                     break;
                 default:
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < 25; i++)
                         if (flocks.get(key) != null) {
-                            population.addBoid((mouseX), mouseY, flocks.get(key));
+                            population.addBoid((mouseX), mouseY, flocks.get(key), key == 'p');
                         } else {
-                            flocks.put(key, (int) (Math.random() * 1000000000));
+                            println(key);
+                            flocks.put(key, key == 'p' ? 999000000 : (int) (Math.random() * 1000000000));
                         }
                     break;
             }
