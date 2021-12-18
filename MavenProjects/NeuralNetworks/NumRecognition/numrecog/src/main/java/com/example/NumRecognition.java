@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import com.example.NetworkLib.BabyNet;
+import com.example.NetworkLib.NeuralNetwork;
 import com.example.Number.Canvas;
 import com.example.Number.Num;
 
@@ -22,17 +22,30 @@ public class NumRecognition extends PApplet {
     int count;
     boolean canvasing;
     Canvas canvas;
-    BabyNet bn;
+    static NeuralNetwork nn;
+
+    public static class OnExit extends Thread{
+        public void run(){
+            try {
+                // NumRecognition.nn.save("src/data/");
+                // System.out.println("Saved NN");
+            } catch (Exception e) {
+                //TODO: handle exception
+            }
+        }
+    }
 
     public static void main(String[] args) {
         String[] processingArgs = { "MySketch" };
         NumRecognition mySketch = new NumRecognition();
+        Runtime.getRuntime().addShutdownHook(new OnExit());
         try {
             PApplet.runSketch(processingArgs, mySketch);
         } catch (Exception e) {
             System.out.println(e);
             e.printStackTrace();
         }
+        // Runtime.getRuntime().addShutdownHook(hook);
     }
 
     @Override
@@ -46,15 +59,13 @@ public class NumRecognition extends PApplet {
         numbers = new ArrayList<>();
         System.out.println("Building Dataset");
         try {
-            Scanner scan = new Scanner(new File("src/data/mnist_train.csv"));
-            int tempCount = 0;
+            Scanner scan = new Scanner(new File("src/data/mnist_test.csv"));
             while (scan.hasNextLine()) {
-                tempCount++;
                 String s = scan.nextLine();
                 Scanner scan2 = new Scanner(s);
                 scan2.useDelimiter(",");
                 int id = scan2.nextInt();
-                float[] vals = new float[784];
+                double[] vals = new double[784];
                 for (int i = 0; i < 784; i++) {
                     vals[i] = scan2.nextInt();
                 }
@@ -66,14 +77,34 @@ public class NumRecognition extends PApplet {
             e.printStackTrace();
         }
         System.out.println("Training Network");
-        bn = new BabyNet(784, 784, 10);
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 60; j++) {
-                int rand = (int) (Math.random() * numbers.size());
-                Num num = numbers.get(rand);
-                bn.train(num.pixels, Num.toIntArr(num.identifier));
-            }
-            System.out.println((i + 1) + "% done");
+        try {
+            nn = NeuralNetwork.load("src/data/Network.nn");
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        // nn = new NeuralNetwork(784, 400, 10, 2, 0.03);
+        // nn.learningRate = 0.005;
+        int count = 0;
+        // while(true){
+        //     count++;
+        //     double err = 0;
+        //     for (int j = 0; j < 600; j++) {
+        //         int rand = (int) (Math.random() * numbers.size());
+        //         Num num = numbers.get(rand);
+        //         err += nn.train(num.pixels, Num.toIntArr(num.identifier));
+        //     }
+        //     err /= 600;
+        //     System.out.println("Generation: " + (count));
+        //     System.out.println("Absolute Error: " + err);
+        //     System.out.println();
+        //     if (err < 0) {
+        //         break;
+        //     }
+        // }
+        try {
+            nn.save("src/data/");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         fill(255);
         noStroke();
@@ -84,14 +115,16 @@ public class NumRecognition extends PApplet {
     @Override
     public void draw() {
         background(0);
-        if(!canvasing){
+        fill(255);
+        rect(225, 275, 550, 550);
+        if (!canvasing) {
             image(numbers.get(count).image, 250, 300, 500, 500);
             Num num = numbers.get(count);
-            float[] f = bn.guess(num.pixels);
+            double[] f = nn.guess(num.pixels);
             int tempCount = 0;
             for (int i = 0; i < width - (width / 10f); i += ((width - width / 10f) / 10f)) {
                 fill(255);
-                rect(i + width / 20f, 200, (width - width / 10f) / 11f, -1 * (180 * f[tempCount]));
+                rect(i + width / 20f, 200, (width - width / 10f) / 11f, -1 * (180 * (float) f[tempCount]));
                 text(tempCount, i + width / 10f - 10, 250);
                 fill(125);
                 text((int) (f[tempCount] * 100) + "%", i + width / 10f - 10, 100);
@@ -100,11 +133,11 @@ public class NumRecognition extends PApplet {
         } else {
             canvas.update(this);
             image(canvas.image, 250, 300, 500, 500);
-            float[] f = bn.guess(canvas.f);
+            double[] f = nn.guess(canvas.d);
             int tempCount = 0;
             for (int i = 0; i < width - (width / 10f); i += ((width - width / 10f) / 10f)) {
                 fill(255);
-                rect(i + width / 20f, 200, (width - width / 10f) / 11f, -1 * (180 * f[tempCount]));
+                rect(i + width / 20f, 200, (width - width / 10f) / 11f, -1 * (180 * (float) f[tempCount]));
                 text(tempCount, i + width / 10f - 10, 250);
                 fill(125);
                 text((int) (f[tempCount] * 100) + "%", i + width / 10f - 10, 100);
@@ -117,6 +150,9 @@ public class NumRecognition extends PApplet {
     public void keyPressed() {
         canvasing = false;
         count = (int) (Math.random() * numbers.size());
+        if(key == 's'){
+            save("src/data/images/" + (Math.random() + "").substring(2) + ".png");
+        }
     }
 
     @Override
@@ -125,5 +161,4 @@ public class NumRecognition extends PApplet {
             canvas = new Canvas();
         canvasing = true;
     }
-
 }

@@ -1,33 +1,53 @@
 package com.example.NetworkLib;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Matrix {
-    float[][] data;
+public class Matrix implements Serializable {
+    double[][] data;
     int rows, cols;
 
     public Matrix(int r, int c){
         rows = r;
         cols = c;
         
-        data = new float[rows][cols];
+        data = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                data[i][j] = (float) (Math.random() * 2 - 1);
+                data[i][j] = (double) (Math.random() * 2 - 1);
             }
         }
     }
 
-    public Matrix(float[][] f){
+    public Matrix(double[][] f){
         rows = f.length;
         cols = f[0].length;
         data = f;
     }
 
 
+    public void zero(){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = 0;
+            }
+        }
+    }
 
-    public void add(float scalar){
+    public static Matrix average(Matrix[] arr){
+        Matrix temp = new Matrix(arr[0].rows, arr[0].cols);
+        temp.zero();
+        for(Matrix m : arr){
+            temp.add(m);
+        }
+        temp.multiply(1f/arr.length);
+        return temp;
+    }
+
+
+
+    public void add(double scalar){
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 data[i][j] += scalar;
@@ -50,7 +70,7 @@ public class Matrix {
 
 
 
-    public void subtract(float scalar){
+    public void subtract(double scalar){
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 data[i][j] -= scalar;
@@ -76,7 +96,7 @@ public class Matrix {
 
 
     public static Matrix transpose(Matrix m){
-        float[][] temp = new float[m.cols][m.rows];
+        double[][] temp = new double[m.cols][m.rows];
         for (int i = 0; i < temp[0].length; i++) {
             for (int j = 0; j < temp.length; j++) {
                 temp[j][i] = m.data[i][j];
@@ -88,7 +108,7 @@ public class Matrix {
 
 
 
-    public void multiply(float scalar) {
+    public void multiply(double scalar) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 data[i][j] *= scalar;
@@ -105,7 +125,7 @@ public class Matrix {
         Matrix temp = new Matrix(a.rows, b.cols);
         for(int i = 0; i < temp.rows; i++){
             for(int j = 0; j < temp.cols; j++){
-                float sum = 0;
+                double sum = 0;
                 for (int k = 0; k < a.cols; k++) {
                     sum += a.data[i][k] * b.data[k][j];
                 }
@@ -129,36 +149,46 @@ public class Matrix {
 
 
 
-    public void sigmoid() {
+    public void activation() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                data[i][j] = (float)(1/(1 + Math.exp(-data[i][j])));
+                data[i][j] = (double)(1/(1 + Math.exp(-data[i][j])));
             }
         }
+        // for (int i = 0; i < rows; i++) {
+        //     for (int j = 0; j < cols; j++) {
+        //         data[i][j] = Math.tanh(data[i][j]);
+        //     }
+        // }
     }
 
-    public Matrix dsigmoid(){
+    public Matrix deactivation(){
         Matrix temp = new Matrix(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                temp.data[i][j] = (float)(data[i][j] * (1-data[i][j]));
+                temp.data[i][j] = (double)(data[i][j] * (1-data[i][j]));
             }
         }
+        // for (int i = 0; i < rows; i++) {
+        //     for (int j = 0; j < cols; j++) {
+        //         temp.data[i][j] = (1/(data[i][j] * data[i][j] + 1));
+        //     }
+        // }
         return temp;
     }
 
 
 
-    public static Matrix fromArray(float[] f){
-        return Matrix.transpose(new Matrix(new float[][]{f}));
+    public static Matrix fromArray(double[] f){
+        return Matrix.transpose(new Matrix(new double[][]{f}));
     }
 
-    public float[] toArray(){
+    public double[] toArray(){
         if(cols != 1){
             System.out.println("MULTIDIMENSIONAL ARRAY ERROR IN TOARRAY()");
         }
         
-        float[] out = new float[rows];
+        double[] out = new double[rows];
 
         for(int i = 0; i < rows; i++){
             out[i] = data[i][0];
@@ -167,11 +197,11 @@ public class Matrix {
     }
 
 
-    public float average(){
-        float avg = 0;
+    public double average(){
+        double avg = 0;
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
-                avg += data[i][j];
+                avg += Math.abs(data[i][j]);
             }
         }
         return avg/(rows * cols);
