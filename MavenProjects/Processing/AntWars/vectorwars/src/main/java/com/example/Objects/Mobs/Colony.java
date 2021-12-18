@@ -13,11 +13,13 @@ public class Colony extends Entity{
     public Set<Ant> ants;
     public int color;
     private World world;
+    public float food;
 
     public Colony(float x, float y, int col, World w) {
         super(x, y);
         world = w;
         color = col;
+        food = 0;
         ants = new HashSet<>();
     }
 
@@ -35,10 +37,14 @@ public class Colony extends Entity{
         for(Ant a  : ants){
             a.update(app);
         }
+        if(food > 50){
+            addAnt(pos.x, pos.y);
+            food = 0;
+        }
     }
 
     public void addAnt(float x, float y) {
-        ants.add(new Ant(x, y, 3, 2f, 0.95f, 999999999, world));
+        ants.add(new Ant(x, y, 3, 2f, 0.95f, this, world));
     }
 
     

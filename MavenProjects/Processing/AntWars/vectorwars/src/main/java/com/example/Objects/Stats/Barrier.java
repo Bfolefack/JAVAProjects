@@ -2,7 +2,6 @@ package com.example.Objects.Stats;
 
 import com.example.VectorWars;
 import com.example.Objects.Entity;
-import com.example.Objects.EntityType;
 
 import processing.core.PVector;
 
@@ -12,12 +11,10 @@ public class Barrier extends Entity {
 
     public Barrier(float x, float y) {
         super(x, y);
-        type = EntityType.BARRIER;
     }
 
     public Barrier(PVector barrierPoint) {
         super(barrierPoint);
-        type = EntityType.BARRIER;
     }
 
     public void display(VectorWars sketch) {

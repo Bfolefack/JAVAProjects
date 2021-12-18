@@ -7,18 +7,23 @@ import java.util.Set;
 
 import com.example.VectorWars;
 import com.example.Objects.Entity;
+import com.example.Objects.Stats.Pheromones.Pheromone;
 import com.example.Utils.QuadTree;
+import com.jogamp.newt.event.PinchToZoomGesture.ZoomEvent;
 
 import processing.core.PConstants;
 import processing.core.PVector;
 import processing.core.PApplet;
 
 public class World {
-    VectorWars sketch;
+	VectorWars sketch;
     public int width;
     int height;
     public float scale;
-    public QuadTree Barriers;
+    public QuadTree<Barrier> barriers;
+    public QuadTree<Food> food;
+    public QuadTree<Pheromone> foodPheromones;
+    public QuadTree<Pheromone> homePheromones;
     public boolean flipped;
     // TODO: Remove This
     ArrayList<PVector> cave = new ArrayList<>();
@@ -32,6 +37,9 @@ public class World {
         sketch = vw;
         scale = s;
         Map<Integer, Map<Integer, Cell>> grid = new HashMap<Integer, Map<Integer, Cell>>();
+        food = new QuadTree<>(1, width * scale, height * scale);
+        foodPheromones = new QuadTree<>(1, width * scale, height * scale);
+        homePheromones = new QuadTree<>(1, width * scale, height * scale);
         for (int i = 0; i < width; i++) {
             grid.put(i, new HashMap<Integer, Cell>());
             for (int j = 0; j < height; j++) {
@@ -64,6 +72,10 @@ public class World {
                                 b[3] = true;
                                 break;
                             }
+                        }
+
+                        if(noise - off > 0.6 && Math.random() < 0.01){
+                            food.insert(new Food((i + k) * scale, (j + l) * scale,Math.abs((0.6f - noise) * 1000)));
                         }
                     }
                 }
@@ -157,16 +169,16 @@ public class World {
             blocks.add(checkBorders(c, barrierPoints, grid));
         }
         bigGrid = grid;
-        Barriers = new QuadTree(2, width * scale, height * scale);
+        barriers = new QuadTree<>(1, width * scale, height * scale);
         for(Barrier b : barrierPoints){
-            Barriers.insert(b);
+            barriers.insert(b);
         }
         for (PVector p : cave) {
-            Barriers.insert(new Barrier(p.x, p.y));
+            barriers.insert(new Barrier(p.x, p.y));
         }
         for (ArrayList<PVector> pv : blocks) {
             for (PVector p : pv) {
-                Barriers.insert(new Barrier(p.x, p.y));
+                barriers.insert(new Barrier(p.x, p.y));
             }
         }
     }
@@ -271,12 +283,19 @@ public class World {
         return null;
     }
 
-    public Set<Entity> getBarriers(PVector p, float r) {
-        return Barriers.getEntities(p, r);
+    public Set<Barrier> getBarriers(PVector p, float r) {
+        return barriers.getEntities(p, r);
     }
 
     public void display() {
         sketch.noStroke();
+        sketch.fill(255, 0, 0);
+        sketch.fill(0, 255, 0);
+        food.display(sketch);
+        sketch.fill(255, 0, 0);
+        foodPheromones.display(sketch);
+        sketch.fill(0, 0, 255);
+        homePheromones.display(sketch);
         sketch.fill(0);
         sketch.beginShape();
         if (flipped) {
@@ -306,7 +325,14 @@ public class World {
             sketch.endShape(PConstants.CLOSE);
         }
 
-        sketch.fill(255, 0, 0);
+
+        homePheromones.update();
+        foodPheromones.update();
+
+        // foodPheromones.insert(new Pheromone(sketch.truMouseX, sketch.truMouseY, 0xFF0000, 1, 0.999f));
+        // sketch.noFill();
+        // sketch.stroke(255);
+        // food.displayTree(sketch);
         // for(Entity e : Barriers.getAll(new HashSet<Entity>())){
         //     Barrier b = (Barrier) e;
         //     if(b.highlight){

@@ -17,7 +17,7 @@ public class VectorWars extends PApplet {
 
     public static int truMouseX;
     public static int truMouseY;
-    public static final String boundKeys = "fFkKt,.";
+    public static final String boundKeys = "rRfFkKt,.";
     public World world;
     // TODO: Delete this
     Set<Ant> ants = new HashSet<>();
@@ -65,7 +65,7 @@ public class VectorWars extends PApplet {
             if (displayTree) {
                 stroke(255);
                 noFill();
-                world.Barriers.display(this);
+                world.barriers.displayTree(this);
             }
             Zoomer.popZoom();
             text(frameRate, 0, 20);
@@ -73,7 +73,7 @@ public class VectorWars extends PApplet {
     }
 
     private void onLoad() {
-        world = new World(this, 500, 500, 20);
+        world = new World(this, 1000, 1000, 20);
         Zoomer.initialize(width / (world.width * world.scale), this);
     }
 
