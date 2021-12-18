@@ -1,5 +1,12 @@
 package com.example.Network;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import com.example.Matrix.Matrix;
@@ -8,9 +15,9 @@ public class NeuralNetwork implements Serializable {
     Matrix[] weights;
     Matrix[] biases;
 
-    public float learningRate;
+    public double learningRate;
 
-    public NeuralNetwork(int inputSize, int hiddenSize, int outputSize, int hiddenLayers, float lr) {
+    public NeuralNetwork(int inputSize, int hiddenSize, int outputSize, int hiddenLayers, double lr) {
         weights = new Matrix[hiddenLayers + 1];
         biases = new Matrix[hiddenLayers + 1];
         weights[0] = new Matrix(hiddenSize, inputSize);
@@ -24,17 +31,17 @@ public class NeuralNetwork implements Serializable {
         learningRate = lr;
     }
 
-    public float[] guess(float[] in) {
+    public double[] guess(double[] in) {
         Matrix layer = Matrix.fromArray(in);
         for (int i = 0; i < weights.length; i++) {
             layer = Matrix.multiply(weights[i], layer);
             layer.add(biases[i]);
-            layer.sigmoid();
+            layer.activation();
         }
         return layer.toArray();
     }
 
-    public float train(float[] in, float[] t){
+    public double train(double[] in, double[] t){
         //Feedforward and construct array of layerOutputs
         Matrix output = Matrix.fromArray(in);
         Matrix[] layerOutputs = new Matrix[weights.length + 1];
@@ -42,16 +49,16 @@ public class NeuralNetwork implements Serializable {
             layerOutputs[i] = output;
             output = Matrix.multiply(weights[i], output);
             output.add(biases[i]);
-            output.sigmoid();
+            output.activation();
         }
         layerOutputs[layerOutputs.length - 1] = output;
 
         Matrix target = Matrix.fromArray(t);
         Matrix error = Matrix.subtract(target, output);
-        float err = error.average();
+        double err = error.average();
 
         for(int i = layerOutputs.length - 1; i > 0; i--){
-            Matrix gradient = layerOutputs[i].dsigmoid();
+            Matrix gradient = layerOutputs[i].deactivation();
             gradient.multiply(error);
             gradient.multiply(learningRate);
             Matrix innerLayerT = Matrix.transpose(layerOutputs[i - 1]);
@@ -68,7 +75,7 @@ public class NeuralNetwork implements Serializable {
         return Math.abs(err);
     }
 
-    public void fit(float[][] inputValues, float[][] targetValues, int epochLength){
+    public void fit(double[][] inputValues, double[][] targetValues, int epochLength){
         for (int i = 0; i < 100; i++) {
             double err = 0;
             for (int j = 0; j < epochLength; j++) {
@@ -77,9 +84,28 @@ public class NeuralNetwork implements Serializable {
             }
             err /= epochLength;
             System.out.println("Epoch " + i + " Absolute Error: " + (err));
-            if(Math.abs(err) < 0.001){
+            if(Math.abs(err) < 0.0001){
                 return;
             }
         }
+    }
+
+    public void save(String s) throws IOException, FileNotFoundException{
+        File f = new File(s + "Network.nn");
+        FileOutputStream fileOutputStream = new FileOutputStream(f);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
+    }
+
+    public static NeuralNetwork load(String s) throws IOException, ClassNotFoundException{
+        File f = new File(s);
+        System.out.println(f);
+        FileInputStream fileInputStream = new FileInputStream(f);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        NeuralNetwork nn = (NeuralNetwork) objectInputStream.readObject();
+        objectInputStream.close();
+        return nn;
     }
 }

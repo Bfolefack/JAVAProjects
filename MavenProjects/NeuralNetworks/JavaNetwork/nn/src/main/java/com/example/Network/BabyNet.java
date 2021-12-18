@@ -4,7 +4,7 @@ import com.example.Matrix.Matrix;
 
 public class BabyNet {
     Matrix weights_ih, weights_ho, bias_h, bias_o;
-    public float learningRate = 0.03f;
+    public double learningRate = 0.03f;
 
     public BabyNet(int i, int h, int o) {
         weights_ih = new Matrix(h, i);
@@ -14,36 +14,36 @@ public class BabyNet {
         bias_o = new Matrix(o, 1);
     }
 
-    public float[] guess(float[] in) {
+    public double[] guess(double[] in) {
         Matrix input = Matrix.fromArray(in);
         Matrix hidden = Matrix.multiply(weights_ih, input);
         hidden.add(bias_h);
-        hidden.sigmoid();
+        hidden.activation();
 
         Matrix output = Matrix.multiply(weights_ho, hidden);
         output.add(bias_o);
-        output.sigmoid();
+        output.activation();
         return output.toArray();
     }
 
-    public float train(float[] in, float[] t) {
+    public double train(double[] in, double[] t) {
         // Feeding Forward
         Matrix input = Matrix.fromArray(in);
         Matrix hidden = Matrix.multiply(weights_ih, input);
         hidden.add(bias_h);
-        hidden.sigmoid();
+        hidden.activation();
 
         Matrix output = Matrix.multiply(weights_ho, hidden);
         output.add(bias_o);
-        output.sigmoid();
+        output.activation();
 
-        float err;
+        double err;
         //Backpropogation
         Matrix target = Matrix.fromArray(t);
         
         Matrix error = Matrix.subtract(target, output);
         err = error.average();
-        Matrix gradient = output.dsigmoid();
+        Matrix gradient = output.deactivation();
         gradient.multiply(error);
         gradient.multiply(learningRate);
 
@@ -56,7 +56,7 @@ public class BabyNet {
         Matrix who_T = Matrix.transpose(weights_ho);
         Matrix hidden_errors = Matrix.multiply(who_T, error);
 
-        Matrix h_gradient = hidden.dsigmoid();
+        Matrix h_gradient = hidden.deactivation();
         h_gradient.multiply(hidden_errors);
         h_gradient.multiply(learningRate);
 
