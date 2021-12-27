@@ -1,6 +1,7 @@
 package com.example.System;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.example.Utils.QuadTree;
 
@@ -8,10 +9,12 @@ import processing.core.PApplet;
 
 public class Orbital {
     QuadTree<Planet> planets;
-    HashSet<Planet> planetSet;
+    Set<Planet> planetSet;
+    Planet average;
+    public boolean showTree;
 
     public Orbital(PApplet app, int number) {
-        planets = new QuadTree<Planet>(50, app.width, app.height);
+        planets = new QuadTree<Planet>(25, app.width, app.height);
         planets.parent = true;
         planetSet = new HashSet<>();
         for (int i = 0; i < number; i++) {
@@ -26,16 +29,19 @@ public class Orbital {
         planets.display(app);
         app.stroke(0, 255, 0);
         app.noFill();
-        planets.displayTree(app);
+        if (showTree)
+            planets.displayTree(app);
 
     }
 
     public void update() {
-        float minX = Float.MAX_VALUE;
-        float minY = Float.MAX_VALUE;
-        float maxX = Float.MIN_VALUE;
-        float maxY = Float.MIN_VALUE;
+        System.out.println(planetSet.size());
+        float minX = Integer.MAX_VALUE;
+        float minY = Integer.MAX_VALUE;
+        float maxX = Integer.MIN_VALUE;
+        float maxY = Integer.MIN_VALUE;
 
+        planetSet.remove(null);
         for (Planet p : planetSet) {
             if (p.pos.x < minX)
                 minX = p.pos.x;
@@ -47,11 +53,15 @@ public class Orbital {
                 maxY = p.pos.y;
         }
 
-        planets = new QuadTree<>(planets.capacity, minX - 10, minY - 10, maxX - minX + 20, maxY - minY + 20);
+        planets = new QuadTree<>(planets.capacity, minX - 1, minY - 1, maxX - minX + 2, maxY - minY + 2, null, "");
 
+        QuadTree.bigTree = planets;
+        planets.parent = true;
         for (Planet p : planetSet) {
             planets.insert(p);
         }
-        planets.update();
+        planets.setRepresentative();
+        planets.getAffectingGravitationalBodies();
+        planetSet = planets.update();
     }
 }

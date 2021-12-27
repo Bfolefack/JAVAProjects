@@ -11,7 +11,7 @@ import processing.event.MouseEvent;
  *
  */
 public class NBody extends PApplet {
-    public static final float gravitationalConstant = 1;
+    public static final float gravitationalConstant = 0.5f;
     public static int truMouseX;
     public static int truMouseY;
     public Orbital solar;
@@ -29,7 +29,7 @@ public class NBody extends PApplet {
 
     @Override
     public void setup() {
-        solar = new Orbital(this, 10000);
+        solar = new Orbital(this, 5000);
         Zoomer.initialize(1, this);
         noStroke();
     }
@@ -40,14 +40,20 @@ public class NBody extends PApplet {
         fill(255);
         Zoomer.mousePan();
         Zoomer.pushZoom();
-        solar.display(this);
         solar.update();
+        solar.display(this);
         Zoomer.popZoom();
         text(frameRate, 0, 10);
+        System.out.println(frameCount);
     }
 
     @Override
     public void mouseWheel(MouseEvent event) {
         Zoomer.mouseScale(event, 0.05f);
+    }
+
+    @Override
+    public void keyPressed(){
+        solar.showTree = !solar.showTree;
     }
 }
