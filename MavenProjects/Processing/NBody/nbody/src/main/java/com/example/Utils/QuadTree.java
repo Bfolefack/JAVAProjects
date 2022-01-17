@@ -54,8 +54,15 @@ public class QuadTree<E extends Planet> {
 
     public void displayTree(PApplet sketch) {
         sketch.noFill();
-        sketch.strokeWeight(w / 100);
-        sketch.rect(x, y, w, h);
+        sketch.strokeWeight(w/10000);
+        sketch.pushMatrix();
+        sketch.scale(100);
+        sketch.rect(x/100, y/100, w/100, h/100);
+        sketch.popMatrix();
+        // sketch.line(x, y, x + w, y);
+        // sketch.line(x + w, y, x + w, y + h);
+        // sketch.line(x + w, y + h, x, y + h);
+        // sketch.line(x, y + h, x, y);
         if (!divided) {
             sketch.fill(255, 0, 0);
             if(representative != null)
@@ -170,7 +177,7 @@ public class QuadTree<E extends Planet> {
     }
 
     private boolean contains(PVector pos) {
-        if (pos.x > x && pos.x <= x + w && pos.y > y && pos.y <= y + h) {
+        if (pos.x >= x && pos.x <= x + w && pos.y >= y && pos.y <= y + h) {
             return true;
         }
         return false;
@@ -287,7 +294,7 @@ public class QuadTree<E extends Planet> {
             x /= mass;
             y /= mass;
             if (mass > 0)
-                representative = new Planet(x, y, mass);
+                representative = new Planet(x, y, mass, true);
         } else {
             for (QuadTree<E> qt : subdivisions) {
                 qt.setRepresentative();

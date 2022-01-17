@@ -1,5 +1,6 @@
 package com.example.System;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,18 +10,35 @@ import processing.core.PApplet;
 
 public class Orbital {
     QuadTree<Planet> planets;
-    Set<Planet> planetSet;
+    public Set<Planet> planetSet;
     Planet average;
     public boolean showTree;
 
     public Orbital(PApplet app, int number) {
-        planets = new QuadTree<Planet>(25, app.width, app.height);
+        planets = new QuadTree<Planet>(25, Planet.deSpawnDist * 2, Planet.deSpawnDist * 2);
         planets.parent = true;
         planetSet = new HashSet<>();
         for (int i = 0; i < number; i++) {
             planetSet.add(new Planet(app));
         }
-        update();
+    }
+
+    public Orbital(PApplet app, ArrayList<Planet> system) {
+        planets = new QuadTree<Planet>(system.size(), Planet.deSpawnDist * 2, Planet.deSpawnDist * 2);
+        planetSet = new HashSet<>();
+        planets.parent = true;
+        for (Planet p : system) {
+            planetSet.add(p);
+        }
+    }
+
+    public Orbital(PApplet app, ArrayList<Planet> system, int c) {
+        planets = new QuadTree<Planet>(c, Planet.deSpawnDist * 2, Planet.deSpawnDist * 2);
+        planetSet = new HashSet<>();
+        planets.parent = true;
+        for (Planet p : system) {
+            planetSet.add(p);
+        }
     }
 
     public void display(PApplet app) {
@@ -35,25 +53,23 @@ public class Orbital {
     }
 
     public void update() {
-        System.out.println(planetSet.size());
-        float minX = Integer.MAX_VALUE;
-        float minY = Integer.MAX_VALUE;
-        float maxX = Integer.MIN_VALUE;
-        float maxY = Integer.MIN_VALUE;
-
-        planetSet.remove(null);
+        // System.out.println(planetSet.size());
+        Planet.largestPlanet = null;
         for (Planet p : planetSet) {
-            if (p.pos.x < minX)
-                minX = p.pos.x;
-            if (p.pos.y < minY)
-                minY = p.pos.y;
-            if (p.pos.x > maxX)
-                maxX = p.pos.x;
-            if (p.pos.y > maxY)
-                maxY = p.pos.y;
+            Planet.largestPlanet = p;
+            break;
         }
 
-        planets = new QuadTree<>(planets.capacity, minX - 1, minY - 1, maxX - minX + 2, maxY - minY + 2, null, "");
+        for (Planet p : planetSet) {
+            if (p != null && Planet.largestPlanet != null)
+                if (p.mass >= Planet.largestPlanet.mass) {
+                    Planet.largestPlanet = p;
+                }
+        }
+
+        planets = new QuadTree<>(planets.capacity, Planet.largestPlanet.pos.x - Planet.deSpawnDist,
+                Planet.largestPlanet.pos.y - Planet.deSpawnDist, 2 * Planet.deSpawnDist, 2 * Planet.deSpawnDist, null,
+                "");
 
         QuadTree.bigTree = planets;
         planets.parent = true;
