@@ -39,4 +39,8 @@ public class ListNode implements Linkable
 	{
 		nextListNode = (ListNode)next;
 	}
+
+	public void increment() {
+		((ThingCount) listNodeValue).increment();
+	}
 }
