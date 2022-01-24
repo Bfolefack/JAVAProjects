@@ -1,18 +1,17 @@
 package com.example.NEAT.Population;
 
-import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.HashSet;
 
 import com.example.NEAT.Network.Genes.Genome;
 import com.example.NEAT.Utils.Config;
 import com.example.NEAT.Utils.FitnessSelector;
-import com.example.XORNeat.XORActor;
 
 public class Species<E extends Actor> implements Comparable<Species> {
     FitnessSelector<E> members = new FitnessSelector<>();
     E representative;
     double bestFitness;
+    double bestGenerationFitness;
     double averageFitness;
     int stale = 0;
 
@@ -41,7 +40,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
             bigBoyFlattener = 1;
         }
 
-        return Config.ComptibilityThreshold > Config.ExcessCoefficient * mismatch / bigBoyFlattener
+        return Config.CompatibilityThreshold > Config.MismatchCoefficient * mismatch / bigBoyFlattener
                 + matchingWeightDiff * Config.weightDiffCoefficient;
     }
 
@@ -83,7 +82,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
 
     @Override
     public int compareTo(Species o) {
-        return ((Double) bestFitness).compareTo(o.bestFitness);
+        return ((Double) bestGenerationFitness).compareTo(o.bestGenerationFitness);
     }
 
     public E getRandom() {
@@ -99,7 +98,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
     }
 
     public void cull() {
-        if (members.size() <= 2) {
+        if (members.size() < 2) {
             stale = 600000;
             return;
         }
@@ -107,7 +106,8 @@ public class Species<E extends Actor> implements Comparable<Species> {
         if (members.size() == 0)
             return;
         for (int i = 0; i < cull; i++) {
-            members.pollFirst();
+            if (members.size() > 1)
+                members.pollFirst();
         }
         representative = members.getFittest();
     }
@@ -116,6 +116,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
         if (size() > 0) {
             averageFitness = members.averageFitness();
             double tempFitness = members.getFittest().fitness;
+            bestGenerationFitness = tempFitness + Math.random()/10000;
             if (tempFitness < bestFitness) {
                 stale++;
             } else {

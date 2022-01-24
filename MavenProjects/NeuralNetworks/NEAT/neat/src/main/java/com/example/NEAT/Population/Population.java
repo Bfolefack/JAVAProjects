@@ -13,14 +13,14 @@ public class Population<E extends Actor> {
     double highScoreFitness;
     int populationSize;
     int generation;
-    E best;
+    public E best;
 
     public Population(Collection<E> founders) {
         populationSize = founders.size();
         species = new TreeSet<>();
         actors = new HashSet<>();
         actors.addAll(founders);
-        sortSpecies(founders);
+        sortSpecies(actors);
     }
 
     public void act() {
@@ -48,7 +48,7 @@ public class Population<E extends Actor> {
         for (Species s : species) {
             s.cull();
             s.calcFitValues();
-            if (s.bestFitness > bestFitness) {
+            if (s.bestFitness >= bestFitness) {
                 bestFitness = s.bestFitness;
                 best = (E) s.getFittest();
             }
@@ -62,35 +62,13 @@ public class Population<E extends Actor> {
         System.out.println("BEST FITNESS: " + bestFitness);
         System.out.println("HIGHSCORE FITNESS: " + highScoreFitness);
         System.out.println("SPECIES: " + species.size());
-        System.out.println("BEST PERFORMANCE");
-        // System.out.println(best.brain.feedForward(new double[] { 0, 0 })[0]);
-        // System.out.println(best.brain.feedForward(new double[] { 1, 0 })[0]);
-        // System.out.println(best.brain.feedForward(new double[] { 0, 1 })[0]);
-        // System.out.println(best.brain.feedForward(new double[] { 1, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 0, 0, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 0, 0, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 1, 0, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 1, 0, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 0, 1, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 0, 1, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 1, 1, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 1, 1, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 0, 0, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 0, 0, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 1, 0, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 1, 0, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 0, 1, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 0, 1, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 1, 1, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 1, 1, 1 })[0]);
-        System.out.println();
-        System.out.println();
         HashSet<E> children = new HashSet<>();
+        
         for (Species s : species) {
-            children.addAll(s.reproduce(s.size() * 1.5));
+            children.addAll(s.reproduce(s.size() * (Config.inbreedingPercentage * 2)));
         }
 
-        while (children.size() < actors.size()) {
+        while (children.size() < populationSize) {
             children.add(((Species<E>) Config.getRandomObject(species))
                     .reproduce((Species<E>) Config.getRandomObject(species)));
         }
@@ -108,7 +86,6 @@ public class Population<E extends Actor> {
             s.clear();
         }
         for (E member : members) {
-            actors.add(member);
             boolean added = false;
             for (Species<E> s : species) {
                 if (s.add(member)) {

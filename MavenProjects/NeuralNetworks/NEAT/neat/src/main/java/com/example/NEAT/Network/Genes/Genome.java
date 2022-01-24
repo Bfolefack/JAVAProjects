@@ -1,15 +1,10 @@
 package com.example.NEAT.Network.Genes;
 
-import java.net.InterfaceAddress;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 import com.example.NEAT.Network.Structures.Node;
 import com.example.NEAT.Utils.Config;

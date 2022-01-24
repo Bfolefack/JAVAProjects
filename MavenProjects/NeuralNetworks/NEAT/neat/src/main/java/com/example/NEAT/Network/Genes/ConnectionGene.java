@@ -1,7 +1,5 @@
 package com.example.NEAT.Network.Genes;
 
-import java.util.TreeMap;
-
 import com.example.NEAT.Network.Structures.Node;
 
 public class ConnectionGene { 
