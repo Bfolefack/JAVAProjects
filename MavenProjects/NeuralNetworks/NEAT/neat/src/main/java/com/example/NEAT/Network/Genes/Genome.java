@@ -113,7 +113,7 @@ public class Genome {
             }
             return fin;
         }
-        return new double[] {-1};
+        return new double[] { -1 };
     }
 
     private void clear() {
@@ -318,8 +318,6 @@ public class Genome {
         }
     }
 
-    
-
     public static Genome crossover(Genome top, Genome bottom) {
         Genome child = new Genome(top.inputs, top.outputs, top.resetAfterRun, top.layers);
         child.clear();
@@ -364,18 +362,15 @@ public class Genome {
             }
         }
 
-        for (Node n : top.nodes.values()) {        
+        for (Node n : top.nodes.values()) {
             // child.addNode(n);
             child.nodes.put(n.idNum, n.copy());
         }
-        
 
         child.generateNetwork();
 
         return child;
     }
-
-    
 
     public void mutate() {
         if (Math.random() < Config.addNodeChance)
@@ -383,12 +378,15 @@ public class Genome {
         if (Math.random() < Config.addConnectionChance)
             addConnection();
         if (connections.size() > 0) {
-            if (Math.random() < Config.pointMutationChance)
-                ((ConnectionGene) Config.getRandomObject(connections.values())).enableDisable();
-            if (Math.random() < Config.scrambleWeightChance)
-                ((ConnectionGene) Config.getRandomObject(connections.values())).scrambleWeight();
-            if (Math.random() < Config.perturbWeightChance)
-                ((ConnectionGene) Config.getRandomObject(connections.values())).perturbWeight();
+            for (ConnectionGene cg : connections.values())
+                if (Math.random() < Config.pointMutationChance)
+                    cg.enableDisable();
+            for (ConnectionGene cg : connections.values())
+                if (Math.random() < Config.scrambleWeightChance)
+                    cg.scrambleWeight();
+            for (ConnectionGene cg : connections.values())
+                if (Math.random() < Config.perturbWeightChance)
+                    cg.perturbWeight();
         }
         generateNetwork();
     }

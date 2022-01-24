@@ -18,14 +18,18 @@ public class NEATRunner {
         System.out.println("★Hello World!★");
         HashSet<XORActor> inits = new HashSet<>();
         for(int i = 0; i < 100; i++){
-            inits.add(new XORActor(2, 1, true));
+            inits.add(new XORActor(4, 1, true));
         }
         Population<XORActor> pop = new Population<XORActor>(inits);
         while(true){
+            long start = System.currentTimeMillis();
             for (int i = 0; i < 100; i++) {
                 pop.act();
             }
+            System.out.println("ACT EXECUTION TIME: " + (System.currentTimeMillis() - start));
+            start = System.currentTimeMillis();
             pop.generation();
+            System.out.println("GENERATION EXECUTION TIME: " + (System.currentTimeMillis() - start));
         }
         // Genome gigi = new Genome(2, 1, true);
         // Genome jojo = new Genome(2, 1, true);

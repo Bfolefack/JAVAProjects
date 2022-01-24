@@ -24,10 +24,11 @@ public class Species<E extends Actor> implements Comparable<Species> {
     }
 
     public boolean add(E interloper) {
-        if (isRelated(interloper)) {
-            members.add(interloper);
-            return true;
-        }
+        if (interloper != null)
+            if (isRelated(interloper)) {
+                members.add(interloper);
+                return true;
+            }
         return false;
     }
 
@@ -86,12 +87,10 @@ public class Species<E extends Actor> implements Comparable<Species> {
     }
 
     public E getRandom() {
-        if (size() > 0) {
-            E e = null;
-            while (e == null)
-                e = members.randomFitSelect();
-            return e;
-        }
+        if (size() > 0)
+            return members.randomFitSelect();
+        System.out.println("MEMBERS EMPTY ERRROR");
+        Thread.dumpStack();
         return null;
     }
 
@@ -100,7 +99,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
     }
 
     public void cull() {
-        if (members.size() <= 2){
+        if (members.size() <= 2) {
             stale = 600000;
             return;
         }
@@ -117,7 +116,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
         if (size() > 0) {
             averageFitness = members.averageFitness();
             double tempFitness = members.getFittest().fitness;
-            if(tempFitness < bestFitness){
+            if (tempFitness < bestFitness) {
                 stale++;
             } else {
                 bestFitness = tempFitness;
@@ -128,7 +127,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
 
     public void fitSharing() {
         for (E e : members.map.values()) {
-            e.fitness /= members.size();
+            // e.fitness /= members.size();
         }
 
     }
@@ -137,7 +136,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
         HashSet<E> newGen = new HashSet<>();
         for (int i = 0; i < size; i++) {
             E e = reproduce();
-            if(e == null){
+            if (e == null) {
                 i--;
                 continue;
             }
@@ -170,7 +169,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
         } catch (Exception e) {
             return null;
         }
-            
+
     }
 
     public E getFittest() {

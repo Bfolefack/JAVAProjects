@@ -13,8 +13,10 @@ public class FitnessSelector<E extends Actor> {
     }
 
     public void add(E actor) {
-        totalFit += actor.fitness;
-        map.put(actor.fitness + Math.random() / 100000, actor);
+        if (actor != null) {
+            totalFit += actor.fitness;
+            map.put(actor.fitness + Math.random() / 100000, actor);
+        }
         // map.remove(null);
     }
 
@@ -27,7 +29,9 @@ public class FitnessSelector<E extends Actor> {
     }
 
     public E randomFitSelect() {
-        if(size() == 0){
+        if (size() == 0) {
+            System.out.println("RANDOM FIT SELECT ERROR");
+            Thread.dumpStack();
             return null;
         }
         if (size() == 1)
@@ -37,11 +41,13 @@ public class FitnessSelector<E extends Actor> {
         double d = Math.random() * totalFit;
         double count = 0;
         for (Double dub : map.keySet()) {
+            count += dub;
             if (count > d) {
                 return map.get(dub);
             }
-            count += dub;
         }
+        System.out.println("REACHED END OF RANDOM FIT SELECT ERROR");
+        Thread.dumpStack();
         return null;
     }
 

@@ -12,14 +12,14 @@ public class Config {
     //Speciation
     public static final double ExcessCoefficient = 1;
     public static final double weightDiffCoefficient = 0.5;
-    public static final double ComptibilityThreshold = 3;
+    public static final double ComptibilityThreshold = 2.5;
 
     //Mutation
-    public static final double perturbWeightChance = 0.8;
-    public static final double scrambleWeightChance = 0.5;
-    public static final double pointMutationChance = 0.2;
-    public static final double addConnectionChance = 0.05;
-    public static final double addNodeChance = 0.01;
+    public static final double perturbWeightChance = 0.1;
+    public static final double scrambleWeightChance = 0.08;
+    public static final double pointMutationChance = 0.05;
+    public static final double addConnectionChance = 0.1;
+    public static final double addNodeChance = 0.02;
 
     public static Object getRandomObject(Collection from) {
         if (from.size() == 0)

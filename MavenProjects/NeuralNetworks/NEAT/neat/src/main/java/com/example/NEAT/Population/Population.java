@@ -34,16 +34,17 @@ public class Population<E extends Actor> {
         generation++;
         calculateFitness();
         sortSpecies(actors);
-        bestFitness = 0;
         TreeSet<Species<E>> good = new TreeSet<>();
-        for (Species<E> s : species) {
-            if (s.members.map.size() > 1 && s.stale < 10){
+        for (Species s : species) {
+            if (s.members.map.size() > 1 && s.stale < 15) {
                 good.add(s);
                 // System.out.println(s.members.map.size());
             }
+            if (species.size() == 1)
+                good.add(s);
         }
         species = good;
-
+        bestFitness = 0;
         for (Species s : species) {
             s.cull();
             s.calcFitValues();
@@ -62,15 +63,31 @@ public class Population<E extends Actor> {
         System.out.println("HIGHSCORE FITNESS: " + highScoreFitness);
         System.out.println("SPECIES: " + species.size());
         System.out.println("BEST PERFORMANCE");
-        System.out.println(best.brain.feedForward(new double[] { 0, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 0 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 0, 1 })[0]);
-        System.out.println(best.brain.feedForward(new double[] { 1, 1 })[0]);
+        // System.out.println(best.brain.feedForward(new double[] { 0, 0 })[0]);
+        // System.out.println(best.brain.feedForward(new double[] { 1, 0 })[0]);
+        // System.out.println(best.brain.feedForward(new double[] { 0, 1 })[0]);
+        // System.out.println(best.brain.feedForward(new double[] { 1, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 0, 0, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 0, 0, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 1, 0, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 1, 0, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 0, 1, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 0, 1, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 1, 1, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 1, 1, 0 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 0, 0, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 0, 0, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 1, 0, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 1, 0, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 0, 1, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 0, 1, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 0, 1, 1, 1 })[0]);
+        System.out.println(best.brain.feedForward(new double[] { 1, 1, 1, 1 })[0]);
         System.out.println();
-
+        System.out.println();
         HashSet<E> children = new HashSet<>();
         for (Species s : species) {
-            children.addAll(s.reproduce(s.size() * 1.8));
+            children.addAll(s.reproduce(s.size() * 1.5));
         }
 
         while (children.size() < actors.size()) {
