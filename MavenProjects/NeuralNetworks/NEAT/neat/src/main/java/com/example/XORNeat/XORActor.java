@@ -62,4 +62,10 @@ public class XORActor extends Actor {
         // Genome newBrain = brain;
         return new XORActor(newBrain);
     }
+
+    @Override
+    public void setInputs(int[] in) {}
+
+    @Override
+    public void display() {}
 }

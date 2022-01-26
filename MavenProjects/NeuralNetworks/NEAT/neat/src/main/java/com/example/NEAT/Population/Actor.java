@@ -1,8 +1,10 @@
 package com.example.NEAT.Population;
 
+import java.io.Serializable;
+
 import com.example.NEAT.Network.Genes.Genome;
 
-public class Actor implements Comparable<Actor>{
+public abstract class Actor implements Comparable<Actor>, Serializable{
     public Genome brain;
     public double fitness;
     public boolean resetAfterRun;
@@ -16,29 +18,15 @@ public class Actor implements Comparable<Actor>{
         brain = b;
     }
 
-    public void setInputs(int[] in){
-        inputs = in;
-    }
+    public abstract void setInputs(int[] in);
 
-    public void act(){
-        Thread.dumpStack();
-    }
+    public abstract void act();
 
-    public void display(){
-        Thread.dumpStack();
-    }
+    public abstract void display();
 
-    public Actor breed(Actor b){
-        Genome newBrain = Genome.crossover(brain, b.brain);
-        newBrain.mutate();
-        return new Actor(newBrain);
-    }
+    public  abstract Actor breed(Actor b);
 
-    public double calculateFitness(){
-        fitness = -1;
-        Thread.dumpStack();
-        return 0;
-    }
+    public abstract double calculateFitness();
 
     @Override
     public int compareTo(Actor o) {

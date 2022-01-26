@@ -1,5 +1,6 @@
 package com.example.NEAT.Network.Genes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.TreeSet;
 import com.example.NEAT.Network.Structures.Node;
 import com.example.NEAT.Utils.Config;
 
-public class Genome {
+public class Genome implements Serializable {
     public static HashMap<Integer, HashMap<Integer, Integer>> nodeInnovations;
     public static HashMap<Integer, HashMap<Integer, Integer>> connectionInnovations;
     public static int nextNode;

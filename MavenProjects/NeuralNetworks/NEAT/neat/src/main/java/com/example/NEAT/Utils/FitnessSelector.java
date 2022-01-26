@@ -47,8 +47,10 @@ public class FitnessSelector<E extends Actor> {
             }
         }
         System.out.println("REACHED END OF RANDOM FIT SELECT ERROR");
-        Thread.dumpStack();
-        return null;
+        // System.out.println(totalFit);
+        // System.out.println(d);
+        // Thread.dumpStack();
+        return trueRandomSelect();
     }
 
     public E trueRandomSelect() {

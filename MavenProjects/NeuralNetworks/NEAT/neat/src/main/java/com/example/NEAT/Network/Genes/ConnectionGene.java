@@ -1,8 +1,10 @@
 package com.example.NEAT.Network.Genes;
 
+import java.io.Serializable;
+
 import com.example.NEAT.Network.Structures.Node;
 
-public class ConnectionGene { 
+public class ConnectionGene implements Serializable { 
     public Node in;
     public Node out;
     public double weight;

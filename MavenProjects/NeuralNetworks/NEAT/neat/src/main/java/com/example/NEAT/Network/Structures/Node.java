@@ -1,10 +1,11 @@
 package com.example.NEAT.Network.Structures;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 import com.example.NEAT.Network.Genes.ConnectionGene;
 
-public class Node implements Comparable<Node> {
+public class Node implements Comparable<Node>, Serializable {
     public int idNum;
 
     public double inputSum;
