@@ -13,7 +13,7 @@ public class Config {
     //Speciation
     public static final double MismatchCoefficient = 1;
     public static final double weightDiffCoefficient = 0.5;
-    public static final double CompatibilityThreshold = 0.75;
+    public static final double CompatibilityThreshold = 0.6;
 
     //Mutation
     public static final double perturbWeightChance = 0.06;

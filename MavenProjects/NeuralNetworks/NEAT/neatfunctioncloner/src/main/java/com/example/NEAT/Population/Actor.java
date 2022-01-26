@@ -1,8 +1,10 @@
 package com.example.NEAT.Population;
 
+import java.io.Serializable;
+
 import com.example.NEAT.Network.Genes.Genome;
 
-public class Actor implements Comparable<Actor>{
+public class Actor implements Comparable<Actor>, Serializable{
     public Genome brain;
     public double fitness;
     public boolean resetAfterRun;

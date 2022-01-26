@@ -1,5 +1,13 @@
 package com.example.NEAT.Population;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeSet;
@@ -16,6 +24,15 @@ public class Population<E extends Actor> {
     public E best;
 
     public Population(Collection<E> founders) {
+        populationSize = founders.size();
+        species = new TreeSet<>();
+        actors = new HashSet<>();
+        actors.addAll(founders);
+        sortSpecies(actors);
+    }
+
+    public Population(String saveLoc) {
+        Collection<E> founders = loadPopulation(saveLoc);
         populationSize = founders.size();
         species = new TreeSet<>();
         actors = new HashSet<>();
@@ -63,7 +80,7 @@ public class Population<E extends Actor> {
         System.out.println("HIGHSCORE FITNESS: " + highScoreFitness);
         System.out.println("SPECIES: " + species.size());
         HashSet<E> children = new HashSet<>();
-        
+
         for (Species s : species) {
             children.addAll(s.reproduce(s.size() * (Config.inbreedingPercentage * 2)));
         }
@@ -96,5 +113,56 @@ public class Population<E extends Actor> {
             if (!added)
                 species.add(new Species<E>(member));
         }
+    }
+
+    public void savePopulation() {
+        int count = 0;
+        int saveLoc = (int) (Math.random() * 1000000);
+        try {
+            Path path = Paths.get("src\\data\\Networks\\" + saveLoc + "\\");
+            Files.createDirectories(path);
+            for (E e : actors) {
+                File f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
+                System.out.println(f.getAbsolutePath());
+                f.createNewFile();
+                FileOutputStream FOS = new FileOutputStream(f);
+                ObjectOutputStream OOS = new ObjectOutputStream(FOS);
+                OOS.writeObject(e);
+                OOS.flush();
+                OOS.close();
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Collection<E> loadPopulation(String saveLoc) {
+        HashSet<E> load = new HashSet<>();
+        int count = 0;
+        try {
+            File f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
+            while (f.exists() == true) {                
+                FileInputStream FIS = new FileInputStream(f);
+                ObjectInputStream OIS = new ObjectInputStream(FIS);
+                E o = null;
+                try {
+                    o = (E)OIS.readObject();
+                } catch (Exception e) {
+                    continue;
+                }
+                load.add(o);
+                OIS.close();
+                
+                f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
+                count++;
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        if (load.size() == 0) {
+            System.out.println("FILE NOT FOUND");
+        }
+        return load;
     }
 }
