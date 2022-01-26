@@ -25,7 +25,7 @@ public class Population<E extends Actor> implements Iterable<E> {
     int populationSize;
     int generation;
     public E best;
-    boolean save = true;
+    boolean save = Config.save;
 
     public Population(Collection<E> founders) {
         populationSize = founders.size();

@@ -7,6 +7,7 @@ import com.example.Game.Bird;
 import com.example.Game.Pipe;
 import com.example.NEAT.FlappyActor;
 import com.example.NEAT.Population.Population;
+import com.example.NEAT.Utils.NetworkDisplay;
 
 import processing.core.PApplet;
 
@@ -19,7 +20,7 @@ public class FlappyNeat extends PApplet {
     public Population<FlappyActor> pop;
     public Pipe nextPipe;
     public boolean pipeCleared;
-    private Bird player = new Bird();
+    public static NetworkDisplay nd;
     private long count;
     private int speed = 1;
     private boolean display = true;
@@ -33,7 +34,7 @@ public class FlappyNeat extends PApplet {
         }
         @Override
         public void run() {
-            fb.pop.savePopulation();
+            // fb.pop.savePopulation();
             System.exit(0);
         }
     }
@@ -58,13 +59,14 @@ public class FlappyNeat extends PApplet {
         frameRate(144);
         pipes = new TreeSet<>();
         pipes.add(new Pipe((float) (Math.random() * (height - 200) + 100), width));
-        HashSet<FlappyActor> fa = new HashSet<>();
+        // HashSet<FlappyActor> fa = new HashSet<>();
         // for (int i = 0; i < 100; i++) {
         //     fa.add(new FlappyActor(true));
         // }
         // pop = new Population<>(fa);
-        pop = new Population<>("2022.01.25.15.30.31");
+        pop = new Population<>("2022.01.25.20.29.56");
         // noStroke();
+        nd = new NetworkDisplay(width/2, height/2);
         textSize(50);
     }
 
@@ -94,10 +96,13 @@ public class FlappyNeat extends PApplet {
             }
             fill(255, 255, 0);
             pop.display();
+            nd.display(this, width/2, 20);
         }
         for (FlappyActor f : pop) {
-            if (f.alive)
+            if (f.alive){
+                nd.updateGenome(f.brain);
                 return;
+            }
         }
         System.out.println("\n\n");;
         if (pop.best != null)
@@ -125,9 +130,6 @@ public class FlappyNeat extends PApplet {
         }
         if (key == '/') {
             speed++;
-        }
-        if (key == 'w') {
-            player.jump();
         }
         if (key == 'd') {
             display = !display;

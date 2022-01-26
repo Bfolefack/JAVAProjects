@@ -22,6 +22,9 @@ public class Config {
     public static final double addConnectionChance = 0.1;
     public static final double addNodeChance = 0.05;
 
+    //Misc
+    public static final boolean save = false;
+
     public static Object getRandomObject(Collection from) {
         if (from.size() == 0)
             return null;
