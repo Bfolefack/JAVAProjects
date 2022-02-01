@@ -7,6 +7,7 @@ import processing.core.PApplet;
 public class Bird implements Serializable{
     public float height;
     public float vel;
+    // public static float jumpMultiplier = 1;
     public Bird(){
         height = 100;
         vel = 0;
@@ -29,7 +30,7 @@ public class Bird implements Serializable{
     }
 
     public void jump(){
-        vel = -13;
+        vel = -13 * 1.2f;
     }
 
     public boolean checkSafe(Pipe p) {

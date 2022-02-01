@@ -20,8 +20,8 @@ public class Genome implements Serializable {
     public HashMap<Integer, ConnectionGene> connections;
     public HashMap<Integer, Node> nodes;
 
-    public static int maxInputs = 8;
-    public static int maxOutputs = 2;
+    public static int maxInputs = 16;
+    public static int maxOutputs = 4;
 
     public int inputs;
     public int outputs;
@@ -29,6 +29,8 @@ public class Genome implements Serializable {
     public int layers = 2;
 
     public boolean resetAfterRun;
+
+    public boolean tooManyOutputs;
 
     static {
         connectionInnovations = new HashMap<>();
@@ -79,8 +81,6 @@ public class Genome implements Serializable {
     public double[] feedForward(double[] inputValues) {
         if (resetAfterRun) {
             clear();
-        } else {
-            softClear();
         }
         generateNetwork();
         ArrayList<Double> out = null;
@@ -101,6 +101,7 @@ public class Genome implements Serializable {
         if (out != null) {
             Object[] dub = out.toArray();
             if (dub.length != outputs) {
+                tooManyOutputs = true;
                 System.out.println("ERROR: TOO MANY OUTPUTS");
                 Thread.dumpStack();
             }
@@ -112,12 +113,6 @@ public class Genome implements Serializable {
             return fin;
         }
         return new double[] { -1 };
-    }
-
-    private void softClear() {
-        for (Node n : nodes.values()) {
-            n.softClear();
-        }
     }
 
     private void clear() {
@@ -178,7 +173,7 @@ public class Genome implements Serializable {
         }
         int count = 0;
         ConnectionGene og = (ConnectionGene) Config.getRandomObject(connections.values());
-        while (!og.enabled || og.in.xPos >= layers - 1 || og.out.xPos <= 0) {
+        while (!og.enabled || og.in.xPos >= layers - 1) {
             count++;
             if (count > Config.AdditionTimeoutCounter) {
                 System.out.println("ERROR: NODE CREATION TIMEOUT");
