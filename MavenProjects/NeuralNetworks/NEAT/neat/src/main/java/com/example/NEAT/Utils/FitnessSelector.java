@@ -50,7 +50,7 @@ public class FitnessSelector<E extends Actor> {
         // System.out.println(totalFit);
         // System.out.println(d);
         // Thread.dumpStack();
-        return trueRandomSelect();
+        return map.lastEntry().getValue();
     }
 
     public E trueRandomSelect() {

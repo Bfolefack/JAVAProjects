@@ -27,6 +27,11 @@ public class Node implements Comparable<Node>, Serializable {
         activatedSum = 0;
     }
 
+    public void softClear(){ 
+        outgoingConnections.clear();
+        inputSum = 0;
+    }
+
     public double evaluate() {
         activatedSum = activate();
         for (ConnectionGene cg : outgoingConnections) {
