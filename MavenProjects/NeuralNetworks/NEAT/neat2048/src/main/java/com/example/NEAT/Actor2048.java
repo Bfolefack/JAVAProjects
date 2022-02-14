@@ -123,12 +123,14 @@ public class Actor2048 extends Actor implements Serializable {
     @Override
     public double calculateFitness() {
         if (!brain.tooManyOutputs)
-            fitness = Math.pow((Math.pow(game.score, 2) / Math.pow((invalidMoves == 0 ? 1 : invalidMoves), 1)), 2)/100000;
+            // fitness = Math.pow((Math.pow(game.score, 2) / Math.pow((invalidMoves == 0 ? 1 : invalidMoves), 1)), 2)/100000;
+            fitness = (Math.pow(game.maxValue(), 3) + Math.pow(game.score, 2)/2)/(invalidMoves == 0 ? 1 : invalidMoves);
         else
             fitness = 0 + Math.random() * 0.0000000001;
         if(game.maxValue() >= 2048){
+            System.out.println("\n\n");
             System.out.println("2048!!!");
-            fitness += game.score * 100;
+            System.out.println("\n\n");
         }
         if(game.maxValue() >= 1024){
             System.out.println("\n\n");
