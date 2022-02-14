@@ -1,9 +1,9 @@
-package com.example.Entities.EntityLib.Mobs;
+package com.example.Game.Entities.EntityLib.Mobs;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.example.Entities.EntityLib.Entity;
+import com.example.Game.Entities.EntityLib.Entity;
 
 import processing.core.PApplet;
 import processing.core.PVector;

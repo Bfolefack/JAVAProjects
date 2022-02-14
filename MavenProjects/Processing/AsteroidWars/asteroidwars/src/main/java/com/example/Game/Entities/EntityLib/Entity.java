@@ -1,10 +1,11 @@
-package com.example.Entities.EntityLib;
+package com.example.Game.Entities.EntityLib;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Entity {
     public PVector pos;
+    public float size;
     protected Entity(float x, float y){
         pos = new PVector(x, y);
     }
