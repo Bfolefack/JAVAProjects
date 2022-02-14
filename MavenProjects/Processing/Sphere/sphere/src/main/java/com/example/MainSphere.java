@@ -12,13 +12,43 @@ import processing.event.MouseEvent;
  */
 public class MainSphere extends PApplet {
 
-    public float xRotation;
     public float yRotation;
+    public float xRotation;
     public float scale = 1;
+    public float noiseRad = 0.1f;
+    public float noiseScale = 1f;
+    public float oceanPercent = 0.5f;
     PVector[][] globe;
     PVector[][][] cubeGlobe;
+    public static final float a = 0.525731112119133606f;
+    public static final float b = 0.850650808352039932f;
+    PVector[] icosahedron = new PVector[] {
+        new PVector(-a, 0, b),
+        new PVector(a, 0, b),
+        new PVector(-a, 0, -b),
+        new PVector(a, 0, -b),
+        new PVector(0, b, a),
+        new PVector(0, b, -a),
+        new PVector(0, -b, a),
+        new PVector(0, -b, -a),
+        new PVector(b, a, 0),
+        new PVector(-b, a, 0),
+        new PVector(b, -a, 0),
+        new PVector(-b, -a, 0),
+    };
+
+    long seed = (long) (Math.random() * Long.MAX_VALUE);
+    OpenSimplexNoise layer1 = new OpenSimplexNoise(seed);
+    OpenSimplexNoise layer2 = new OpenSimplexNoise(seed / 2);
+    OpenSimplexNoise layer3 = new OpenSimplexNoise(seed / 3);
+    OpenSimplexNoise layer4 = new OpenSimplexNoise(seed / 4);
+    OpenSimplexNoise layer5 = new OpenSimplexNoise(seed / 5);
+    OpenSimplexNoise layer6 = new OpenSimplexNoise(seed / 6);
+    OpenSimplexNoise layer7 = new OpenSimplexNoise(seed / 7);
+    OpenSimplexNoise layer8 = new OpenSimplexNoise(seed / 8);
 
     public static void main(String[] args) {
+        System.out.println(Math.pow(a, 2) + Math.pow(b, 2));
         String[] processingArgs = { "MySketch" };
         MainSphere mySketch = new MainSphere();
         PApplet.runSketch(processingArgs, mySketch);
@@ -27,6 +57,7 @@ public class MainSphere extends PApplet {
     @Override
     public void settings() {
         size(1000, 800, P3D);
+        System.out.println(seed);
     }
 
     @Override
@@ -40,16 +71,17 @@ public class MainSphere extends PApplet {
         background(0);
         translate(width / 2, height / 2, scale);
         // scale(scale);
-        rotateX(-yRotation);
-        rotateY(xRotation);
+        rotateX(-xRotation);
+        rotateY(yRotation);
         // strokeWeight(0.1f);
-        stroke(255);
-        fill(0);
+        stroke(0);
+        fill(255);
         // radialSphere(200);
         cubeSphere(1000);
+        // icosahedronSphere(500);
         if (mousePressed) {
-            xRotation += (mouseX - pmouseX) * 0.01f * (360f / width);
-            yRotation += (mouseY - pmouseY) * 0.01f * (360f / height);
+            yRotation += (mouseX - pmouseX) * 0.01f * (360f / width);
+            xRotation += (mouseY - pmouseY) * 0.01f * (360f / height);
         }
     }
 
@@ -154,42 +186,62 @@ public class MainSphere extends PApplet {
             }
         }
 
-        OpenSimplexNoise n = new OpenSimplexNoise((int) (Math.random() * Integer.MAX_VALUE));
+        // OpenSimplexNoise n = new OpenSimplexNoise((int) (Math.random() *
+        // Integer.MAX_VALUE));
         for (PVector[][] paa : cubeGlobe) {
             for (PVector[] pa : paa) {
                 for (PVector p : pa) {
-                    float noise = 0;
-                    float rad = 0f;
-                    float nD = 2f;
-                    noise += Math.pow((float) ((n.eval(nD * p.x, nD * p.y, nD * p.z) + 1) / 2), 1) * rad;
-                    nD *= 2;
-                    rad /= 4;
-                    noise += Math.pow((float) ((n.eval(nD * p.x, nD * p.y, nD * p.z) + 1) / 2), 1) * rad;
-                    nD *= 2;
-                    rad /= 2;
-                    noise += Math.pow((float) ((n.eval(nD * p.x, nD * p.y, nD * p.z) + 1) / 2), 1) * rad;
-                    nD *= 2;
-                    rad /= 2;
-                    noise += Math.pow((float) ((n.eval(nD * p.x, nD * p.y, nD * p.z) + 1) / 2), 1) * rad;
-                    nD *= 2;
-                    rad /= 2;
-                    noise += Math.pow((float) ((n.eval(nD * p.x, nD * p.y, nD * p.z) + 1) / 2), 1) * rad;
-                    p.normalize().add(new PVector(p.x, p.y, p.z).mult(noise));
+                    p.normalize();
+                    float noise = getNoise(p.x, p.y, p.z);
+                    // if(noise > 0.9){
+                    // System.out.println(noise);
+                    // }
+                    p.add(new PVector(p.x, p.y, p.z).mult(noise * noiseRad));
                 }
             }
         }
     }
 
+    public PVector sphericalToRadial(float lat, float lon) {
+        float r = 1;
+        float x = (r) * sin(lat) * cos(-lon);
+        float y = (r) * sin(lat) * sin(-lon);
+        float z = (r) * cos(lat);
+        return new PVector(x, y, z);
+    }
+
+    public float getNoise(float x, float y, float z) {
+        float noise = 0;
+
+        noise += layer1.eval(x * 2 * noiseScale, y * 2 * noiseScale, z * 2 * noiseScale) * 0.5;
+        noise += layer2.eval(x * 4 * noiseScale, y * 4 * noiseScale, z * 4 * noiseScale) * 0.25;
+        noise += layer3.eval(x * 8 * noiseScale, y * 8 * noiseScale, z * 8 * noiseScale) * 0.125;
+        noise += layer4.eval(x * 16 * noiseScale, y * 16 * noiseScale, z * 16 * noiseScale) * 0.0625;
+        noise += layer5.eval(x * 32 * noiseScale, y * 32 * noiseScale, z * 32 * noiseScale) * 0.03125;
+        noise += layer6.eval(x * 64 * noiseScale, y * 64 * noiseScale, z * 64 * noiseScale) * 0.015625;
+        noise += layer7.eval(x * 128 * noiseScale, y * 128 * noiseScale, z * 128 * noiseScale) * 0.0078125;
+        noise = (noise + 1) / 2;
+        noise = (float) Math.pow(noise, 1.25);
+
+        return (noise < oceanPercent ? 0 : (noise - oceanPercent) * 1 / (1 - oceanPercent));
+    }
+
     public void cubeSphere(float scale) {
-        // noStroke();
+        noStroke();
+        // PVector target = sphericalToRadial(lat, lon)
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < cubeGlobe[0].length - 1; j++) {
                 beginShape(QUAD_STRIP);
                 for (int k = 0; k < cubeGlobe[0].length; k++) {
                     PVector p = cubeGlobe[i][j][k];
-                    // fill(600 * (PVector.dist(p, new PVector(0, 0, 0)) - 1), 0, 255);
-                    // if (j == 0 || k == 0 || j == cubeGlobe[0].length - 2 || k == cubeGlobe[0].length - 1)
-                    //     fill(0, 255, 0);
+                    if (PVector.dist(p.copy().normalize(), sphericalToRadial(height/360f * yRotation, xRotation)) < 0.1f) {
+                        fill(255, 0, 0);
+                    } else if (PVector.dist(p, new PVector(0, 0, 0)) <= 1.0 + noiseRad / 100)
+                        fill(0, 0, 255);
+                    else {
+                        fill(0, 255 - 255 / noiseRad * (PVector.dist(p, new PVector(0, 0, 0)) - 1f), 0);
+                        // System.out.println(PVector.dist(p, new PVector(0, 0, 0)));
+                    }
                     PVector p2 = cubeGlobe[i][j + 1][k];
                     if (p != null)
                         vertex(p.x * scale, p.y * scale, p.z * scale);
@@ -224,5 +276,27 @@ public class MainSphere extends PApplet {
     @Override
     public void mouseWheel(MouseEvent e) {
         scale += e.getCount() * 20f;
+    }
+
+    public void icosahedronSphere(float scale){
+        strokeWeight(5);
+        beginShape(TRIANGLES);
+        for (int i = 0; i < icosahedron.length - 2; i++) {
+            vertex(PVector.mult(icosahedron[i], scale));
+            vertex(PVector.mult(icosahedron[i + 1], scale));
+            vertex(PVector.mult(icosahedron[i + 2], scale));
+            vertex(PVector.mult(icosahedron[i], scale));
+        }
+        endShape();
+        // stroke(255);
+        // strokeWeight(50);
+        for (PVector vec : icosahedron) {
+            point(vec.x * scale, vec.y * scale, vec.z * scale);
+        }
+    }
+
+    // @Override
+    public void vertex(PVector p) {
+        vertex(p.x, p.y, p.z);
     }
 }
