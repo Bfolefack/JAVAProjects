@@ -234,7 +234,7 @@ public class MainSphere extends PApplet {
                 beginShape(QUAD_STRIP);
                 for (int k = 0; k < cubeGlobe[0].length; k++) {
                     PVector p = cubeGlobe[i][j][k];
-                    if (PVector.dist(p.copy().normalize(), sphericalToRadial(height/360f * yRotation, xRotation)) < 0.1f) {
+                    if (PVector.dist(p.copy().normalize(), sphericalToRadial(-yRotation, (float)-Math.PI * 2 *  xRotation)) < 0.1f) {
                         fill(255, 0, 0);
                     } else if (PVector.dist(p, new PVector(0, 0, 0)) <= 1.0 + noiseRad / 100)
                         fill(0, 0, 255);
@@ -242,6 +242,8 @@ public class MainSphere extends PApplet {
                         fill(0, 255 - 255 / noiseRad * (PVector.dist(p, new PVector(0, 0, 0)) - 1f), 0);
                         // System.out.println(PVector.dist(p, new PVector(0, 0, 0)));
                     }
+                    if(j == 0 || k == 0 || j == cubeGlobe[0].length - 1 || k == cubeGlobe[0].length - 1)
+                        fill(255, 255, 0);
                     PVector p2 = cubeGlobe[i][j + 1][k];
                     if (p != null)
                         vertex(p.x * scale, p.y * scale, p.z * scale);
