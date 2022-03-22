@@ -61,11 +61,11 @@ public class FlappyNeat extends PApplet {
         pipes = new TreeSet<>();
         pipes.add(new Pipe((float) (Math.random() * (height - 200) + 100), width));
         HashSet<FlappyActor> fa = new HashSet<>();
-        // for (int i = 0; i < 1000; i++) {
-        //     fa.add(new FlappyActor(false));
-        // }
-        // pop = new Population<>(fa);
-        pop = new Population<>("2022.01.27.15.05.54");
+        for (int i = 0; i < 1000; i++) {
+            fa.add(new FlappyActor(false));
+        }
+        pop = new Population<>(fa);
+        // pop = new Population<>("2022.01.27.15.05.54");
         // noStroke();
         nd = new NetworkDisplay(width/2, height/2);
         textSize(50);

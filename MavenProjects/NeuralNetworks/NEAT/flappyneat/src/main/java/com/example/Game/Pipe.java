@@ -5,6 +5,8 @@ import processing.core.PApplet;
 public class Pipe implements Comparable<Pipe>{
     public float height;
     public Float xPos;
+    public static int pipeGap = 150;
+    public static int pipeWidth = 25;
     public Pipe(float h, float x){
         height = h;
         xPos = x;
@@ -15,8 +17,8 @@ public class Pipe implements Comparable<Pipe>{
     }
 
     public void display(PApplet app){
-        app.rect(xPos - 50, 0, 100, height - 100);
-        app.rect(xPos - 50, height + 100, 100, 1000);
+        app.rect(xPos - pipeWidth/2, 0, pipeWidth, height - pipeGap/2);
+        app.rect(xPos - pipeWidth/2, height + pipeGap/2, pipeWidth, 1000);
     }
 
     @Override
