@@ -5,7 +5,7 @@
 
 public class TreeNode implements Treeable
 {
-	private Comparable treeNodeValue;
+	private ThingCount treeNodeValue;
 	private TreeNode leftTreeNode;
 	private TreeNode rightTreeNode;
 
@@ -16,14 +16,14 @@ public class TreeNode implements Treeable
 		rightTreeNode = null;
 	}
 
-	public TreeNode(Comparable value)
+	public TreeNode(ThingCount value)
 	{
 		treeNodeValue = value;
 		leftTreeNode = null;
 		rightTreeNode = null;
 	}
 
-	public TreeNode(Comparable value, TreeNode left, TreeNode right)
+	public TreeNode(ThingCount value, TreeNode left, TreeNode right)
 	{
 		treeNodeValue = value;
 		leftTreeNode = left;
@@ -45,7 +45,7 @@ public class TreeNode implements Treeable
 		return rightTreeNode;
 	}
 
-	public void setValue(Comparable value)
+	public void setValue(ThingCount value)
 	{
 		treeNodeValue = value;
 	}
@@ -58,5 +58,15 @@ public class TreeNode implements Treeable
 	public void setRight(Treeable right)
 	{
 		rightTreeNode = (TreeNode)right;
+	}
+
+	public String toString(){
+		return treeNodeValue.toString();
+	}
+
+	@Override
+	public void setValue(Comparable value) {
+		setValue((ThingCount)value);
+		
 	}
 }
