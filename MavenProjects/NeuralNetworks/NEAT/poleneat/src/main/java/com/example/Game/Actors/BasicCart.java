@@ -1,6 +1,7 @@
-package com.example.Game.BasicCartSolver;
+package com.example.Game.Actors;
 
 import com.example.Game.Cart;
+import com.example.Game.DoubleCart;
 
 import processing.core.PApplet;
 

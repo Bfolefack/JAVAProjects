@@ -85,6 +85,10 @@ public class Genome implements Serializable {
         generateNetwork();
         ArrayList<Double> out = null;
         nodes.get(0).inputSum = 1;
+        if(inputValues.length != inputs){
+            System.out.print("MISMATCH IN NUMBER OF INPUTS: ");
+            System.out.println("EXPECTED " + inputs + " INPUTS, RECEIVED " + inputValues.length);
+        }
         for (int i = 1; i < inputs + 1; i++) {
             nodes.get(i).inputSum = inputValues[i - 1];
         }

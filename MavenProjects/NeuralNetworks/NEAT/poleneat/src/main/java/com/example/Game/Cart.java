@@ -8,9 +8,10 @@ public class Cart {
     public static final float timeStep = 0.01f;
     public static final float scale = 100;
     public static final float friction = 0.95f;
+    public static final float  variability = 0.001f;
 
-    public float poleLength = 1.5f;
-    public float poleMass = 0.1f;
+    public float poleLength = 4f;
+    public float poleMass = 0.5f;
     public float cartMass = 1;
 
     public float polePos;
@@ -22,7 +23,7 @@ public class Cart {
     public float cartAcc;
 
     public Cart() {
-        polePos = (float) (Math.PI + Math.random() * 0.001);
+        polePos = (float) (Math.PI + Math.random() * variability);
     }
 
     public Cart(float cp, float pp) {
@@ -51,7 +52,7 @@ public class Cart {
     public void display(PApplet sketch){
         sketch.pushMatrix();
         sketch.translate(cartPos * scale + sketch.width/2, sketch.height/2);
-        sketch.rect(-scale, -50, 200, scale);
+        sketch.rect(-scale * 2, 0, scale * 4, scale * 2);
         sketch.line(0, 0, (float) Math.sin(polePos) * poleLength * scale, (float) Math.cos(polePos) * poleLength * scale);
         sketch.ellipse((float) Math.sin(polePos) * poleLength * scale, (float) Math.cos(polePos) * poleLength * scale, poleMass * scale, poleMass * scale);
         sketch.popMatrix();

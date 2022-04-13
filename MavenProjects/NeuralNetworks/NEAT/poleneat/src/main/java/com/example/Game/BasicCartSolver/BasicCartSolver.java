@@ -4,12 +4,14 @@ import java.util.HashSet;
 import java.util.TreeMap;
 
 import com.example.PoleNEAT;
+import com.example.Game.Actors.BasicCart;
 
 import processing.core.PApplet;
 
 public class BasicCartSolver {
     public HashSet<BasicCart> population;
     public int generation = 1;
+    public boolean displayed;
 
     public BasicCartSolver(int populationSize) {
         population = new HashSet<>();
@@ -22,30 +24,39 @@ public class BasicCartSolver {
         boolean anyAlive = false;
         for (BasicCart basicCart : population) {
             if (basicCart.update()) {
-                if (!anyAlive && PoleNEAT.display)
-                    basicCart.display(p);
+                switch (PoleNEAT.display) {
+                    case 1:
+                        if (!anyAlive && !displayed)
+                            basicCart.display(p);
+                        break;
+                    case 2:
+                        if (!displayed)
+                            basicCart.display(p);
+                        break;
+                }
                 anyAlive = true;
             }
         }
-        if(!anyAlive)
+        if (!anyAlive)
             generation();
+        displayed = true;
     }
 
     private void generation() {
         generation++;
         double total = 0;
         TreeMap<Double, BasicCart> map = new TreeMap<>();
-        
+
         for (BasicCart basicCart : population) {
             double temp = Math.pow(basicCart.fitness + Math.random(), 2);
             total += temp;
             map.put(temp, basicCart);
         }
-        for (int i = 0; i < population.size()/2; i++) {
+        for (int i = 0; i < population.size() / 2; i++) {
             total -= map.pollFirstEntry().getKey();
         }
         System.out.println("GENERATION " + generation + ":");
-        System.out.println("GREATEST FITNESS: " +  Math.sqrt(map.lastKey()));
+        System.out.println("GREATEST FITNESS: " + Math.sqrt(map.lastKey()));
         System.out.println();
         HashSet<BasicCart> nextGen = new HashSet<>();
         for (int i = 0; i < population.size(); i++) {
@@ -54,12 +65,12 @@ public class BasicCartSolver {
         population = nextGen;
     }
 
-    public BasicCart getWeightedRandom(double total, TreeMap<Double, BasicCart> map){
+    public BasicCart getWeightedRandom(double total, TreeMap<Double, BasicCart> map) {
         double temp = Math.random() * total;
         double count = 0;
         for (Double d : map.keySet()) {
             count += d;
-            if(count > temp){
+            if (count > temp) {
                 return map.get(d);
             }
         }

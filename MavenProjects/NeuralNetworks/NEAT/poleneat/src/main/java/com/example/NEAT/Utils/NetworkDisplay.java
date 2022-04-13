@@ -120,8 +120,8 @@ public class NetworkDisplay {
                 float count = 0;
                 for (Node n : g.network.get(i)) {
                     nodeMap.put(n.idNum,
-                            new NodeDisplayObject(n.idNum, width * (float) i / g.network.size(),
-                                    height * ((count + 0.5f) / layerHeight), n.inputSum));
+                            new NodeDisplayObject(n.idNum, width * (float) i / (g.network.size() - 1),
+                                    height * ((count + 0.5f) / (layerHeight)), n.inputSum));
                     count++;
                 }
             }
