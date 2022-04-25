@@ -2,9 +2,12 @@ package com.example.NEAT.Population;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,7 +82,7 @@ public class Population<E extends Actor> implements Iterable<E> {
 
         if (bestFitness > highScoreFitness) {
             highScoreFitness = bestFitness;
-            if(save){
+            if (save) {
                 savePopulation();
             }
         }
@@ -148,28 +151,35 @@ public class Population<E extends Actor> implements Iterable<E> {
     public Collection<E> loadPopulation(String saveLoc) {
         HashSet<E> load = new HashSet<>();
         int count = 0;
+        File f = null;
         try {
-            File f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
-            while (f.exists() == true) {
+            f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
+            while (true) {
                 FileInputStream FIS = new FileInputStream(f);
                 ObjectInputStream OIS = new ObjectInputStream(FIS);
                 E o = null;
-                try {
-                    o = (E) OIS.readObject();
-                } catch (Exception e) {
-                    continue;
-                }
+                o = (E) OIS.readObject();
                 load.add(o);
                 OIS.close();
 
                 f = new File("src\\data\\Networks\\" + saveLoc + "\\" + count + ".neat");
                 count++;
             }
+        } catch (FileNotFoundException e) {
+            if (load.size() == 0)
+                System.out.println("FILES IN " + f.toString().substring(0, f.toString().length() - 7) + " NOT FOUND");
+        } catch (StreamCorruptedException e) {
+            System.out.println("FILE " + f + " IS NOT A NETWORK");
+        } catch (ClassNotFoundException e) {
+            System.out.println("FILE " + f + " IS NOT CORRECT NETWORK TYPE");
+        } catch (IOException e) {
+            System.out.println("UNKNOWN IO EXCEPTION");
         } catch (Exception e) {
-            // TODO: handle exception
-        }
-        if (load.size() == 0) {
-            System.out.println("FILE NOT FOUND");
+            System.out.println("UNKNOWN EXCEPTION");
+        } finally {
+            load.remove(null);
+            System.out.println("LOADED " + load.size() + " ACTORS");
+            System.out.println();
         }
         return load;
     }

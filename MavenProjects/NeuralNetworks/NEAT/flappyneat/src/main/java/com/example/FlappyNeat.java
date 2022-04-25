@@ -65,7 +65,18 @@ public class FlappyNeat extends PApplet {
             fa.add(new FlappyActor(false));
         }
         pop = new Population<>(fa);
-        // pop = new Population<>("2022.01.27.15.05.54");
+        
+        // pop = new Population<>("NotATest");
+        // pop = new Population<>("Test0");
+        // pop = new Population<>("Test1");
+        // pop = new Population<>("Test2");
+        // pop = new Population<>("Test3");
+        // pop = new Population<>("Test4");
+
+        if(pop.actors.size() == 0){
+            pop = null;
+            System.exit(1);
+        }
         // noStroke();
         nd = new NetworkDisplay(width/2, height/2);
         textSize(50);
