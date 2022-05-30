@@ -4,14 +4,11 @@ import com.example.CarNeat;
 import com.example.Game.Car;
 import com.example.Game.Track;
 import com.example.NEAT.Network.Genes.Genome;
+import com.example.NEAT.Utils.Config;
 
 import processing.core.PVector;
 
 public class CarActor extends Actor {
-
-    /**
-     *
-     */
     private static int MAX_IDLE_COUNTER = 90;
     private static int MAX_ALIVE_COUNTER = 10800;
     static int MAX_TIME_ON_CHECKPOINT = 1200;
@@ -60,7 +57,7 @@ public class CarActor extends Actor {
             int arrLength = car.sightPoints.length * 2 - 2;
             double[] ins = new double[arrLength + 4];
             for (int i = 0; i < arrLength; i += 2) {
-                ins[i] = car.sightPoints[i / 2].mag()/Car.sightRange;
+                ins[i] = ((car.sightPoints[i / 2].mag()/Car.sightRange) - 0.5) * 2;
                 switch (car.sightPointTypes[i / 2]) {
                     case ROAD:
                         ins[i + 1] = 1;
@@ -87,6 +84,7 @@ public class CarActor extends Actor {
             car.update((float) outs[0], (float) outs[1]);
             if (car.target != prevCheckpoint) {
                 checkpointsPassed++;
+                epochFitness += checkpointsPassed;
                 timeOnCheckpoint = 0;
             } else {
                 timeOnCheckpoint++;
@@ -120,18 +118,34 @@ public class CarActor extends Actor {
 
     @Override
     public double calculateFitness() {
-        double temp = ((Math.pow((checkpointsPassed/(float)car.track.checkPoints.size()) * 100,3)));
-        fitness = temp;
-        if(fitness > CarNeat.pop.highScoreFitness)
-            System.out.println("AHIJGHKUHKEBUBFBFUGUEF");
-        return fitness;
+        // double temp = (((Math.pow((checkpointsPassed/(float)car.track.checkPoints.size()) * 10,4))) + Math.pow(aliveCounter, 1))/(diedBeforeTimeout ? 10 : 1);
+        // epochFitness = temp;
+        batchFitness += Math.pow(epochFitness, 2) + aliveCounter;
+        return epochFitness;
     }
 
     @Override
     public Actor clone() {
         CarActor r = new CarActor((Genome)brain.copy(), car.track);
-        r.fitness = fitness;
+        r.batchFitness = batchFitness;
         return r;
+    }
+
+    @Override
+    public void normalizeFitness() {
+        batchFitness/=Config.epochsPerBatch;        
+    }
+
+    @Override
+    public void epoch() {
+        car = new Car(15, 15f, 1f, nextTrack);
+        alive = true; 
+        prevCheckpoint = car.target;
+        diedBeforeTimeout =true;
+        aliveCounter = 0;
+        timeOnCheckpoint = 0;
+        idleCounter = 0;
+        car.update(0, 0);        
     }
 
 }

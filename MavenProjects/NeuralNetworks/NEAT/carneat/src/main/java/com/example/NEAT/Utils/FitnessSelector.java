@@ -14,16 +14,16 @@ public class FitnessSelector<E extends Actor> {
 
     public void add(E actor) {
         if (actor != null) {
-            totalFit += actor.fitness;
-            map.put(actor.fitness + Math.random() / 100000, actor);
+            totalFit += actor.batchFitness;
+            map.put(actor.batchFitness + Math.random() / 100000, actor);
         }
         // map.remove(null);
     }
 
     public void remove(E actor) {
         if (actor != null) {
-            totalFit -= actor.fitness;
-            map.remove(actor.fitness);
+            totalFit -= actor.batchFitness;
+            map.remove(actor.batchFitness);
         }
     }
 

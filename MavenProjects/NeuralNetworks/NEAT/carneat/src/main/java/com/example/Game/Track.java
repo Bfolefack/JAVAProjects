@@ -18,36 +18,15 @@ public class Track implements Serializable {
     ArrayList<PVector> track;
     public ArrayList<LinearFormula> checkPoints;
     TrackType[][] grid;
-    public static final int trackWidth = 60;
+    public static final int trackWidth = GameConfig.TRACK_WIDTH;
     public static TreeMap<Integer, float[][]> loadedTracks;
     transient PImage gridDisplay;
     private PVector lowestCheckPoint;
     public int lowestCheckPointIndex;
+    public int randomCheckPointIndex;
 
     public enum TrackType {
         GRASS, ROAD, CHECKPOINT, WALL
-    }
-
-    public Track(int w, int h) {
-        width = w;
-        height = h;
-        grid = new TrackType[w][h];
-        initializeGrid();
-    }
-
-    public Track(TrackType[][] g) {
-        grid = g;
-        width = g.length;
-        height = g[0].length;
-        initializeGrid();
-    }
-
-    public Track(int gridResolution, PApplet p) {
-        width = p.width / gridResolution;
-        height = p.height / gridResolution;
-        grid = new TrackType[width][height];
-        initializeGrid();
-        track = generateTrack();
     }
 
     public Track(PApplet p) {
@@ -56,7 +35,27 @@ public class Track implements Serializable {
         grid = new TrackType[width][height];
         initializeGrid();
         track = generateTrack();
-        display(p);
+        generateGrid(p);
+        // generateObstacles(75);
+        generateImage(p);
+        randomCheckPointIndex = (int) (Math.random() * checkPoints.size());
+    }
+
+    private void generateObstacles(int num) {
+        for (int i = 0; i < num; i++) {
+            int size = (int) (Math.random() * (trackWidth / 4));
+            PVector pos = new PVector((int) (Math.random() * width), (int) (Math.random() * height));
+            if (grid[(int) pos.x][(int) pos.y] == TrackType.ROAD) {
+                for (int j = -size; j < size; j++) {
+                    for (int l = -size; l < size; l++) {
+                        if (pos.x + j >= 0 && pos.x + j < width && pos.y + l >= 0 && pos.y + l < height)
+                            if (new PVector(j, l).mag() < size)
+                                if (grid[(int) pos.x + j][(int) pos.y + l] == TrackType.ROAD || grid[(int) pos.x + j][(int) pos.y + l] == TrackType.CHECKPOINT)
+                                    grid[(int) pos.x + j][(int) pos.y + l] = TrackType.WALL;
+                    }
+                }
+            }
+        }
     }
 
     private void initializeGrid() {
@@ -68,17 +67,14 @@ public class Track implements Serializable {
     }
 
     public void display(PApplet p) {
-        if (gridDisplay == null) {
-            generateGrid(p);
-        }
         p.image(gridDisplay, 0, 0, p.width, p.height);
     }
 
     public ArrayList<PVector> generateTrack() {
         ArrayList<PVector> hull = convexHull();
-        for (int i = 0; i < hull.size() - 1; i ++) {
+        for (int i = 0; i < hull.size() - 1; i++) {
             PVector p = offset(hull.get(i), hull.get(i + 1));
-            if(p != null) {
+            if (p != null) {
                 hull.add(i + 1, p);
                 i++;
             } else {
@@ -104,8 +100,9 @@ public class Track implements Serializable {
         HashSet<PVector> points = new HashSet<PVector>();
 
         for (int i = 0; i < Math.random() * 15 + 15; i++) {
-            points.add(new PVector(width / 6f + (float) Math.random() * (width - width / 3f),
-                    height / 6f + (float) Math.random() * (height - height / 3f)));
+            points.add(new PVector(
+                    (trackWidth * 2) + (float) Math.random() * (GameConfig.WIDTH - trackWidth * 4),
+                    (trackWidth * 2) + (float) Math.random() * (GameConfig.HEIGHT - trackWidth * 4)));
         }
 
         HashSet<PVector> hitList = new HashSet<PVector>();
@@ -196,8 +193,7 @@ public class Track implements Serializable {
         checkPoints = new ArrayList<LinearFormula>();
         int checkPointInterval = 5;
         float checkPointSpacing = 5;
-
-        for (int i = 0; i < track.size(); i += checkPointInterval) {
+        for (int i = 0; i < track.size() - 1; i += checkPointInterval) {
             PVector step = track.get(i);
             step.set(step.x, step.y);
             if (PVector.dist(step, lastStep) > trackWidth / checkPointSpacing
@@ -224,6 +220,10 @@ public class Track implements Serializable {
                 }
             }
         }
+        generateImage(p);
+    }
+
+    private void generateImage(PApplet p) {
         gridDisplay = p.createImage(width, height, PApplet.RGB);
         for (
 
@@ -288,21 +288,21 @@ public class Track implements Serializable {
     }
 
     public PVector offset(PVector v1, PVector v2) {
-        float difficulty = 7.5f;
+        float difficulty = 5f;
         PVector v = PVector.add(v1, v2).div(2);
         v.add(PVector.sub(v1, v2).rotate((float) Math.PI / 2).div(difficulty).mult((float) (Math.random() * 2 - 1)));
-        if(v.x < width/3f || v.x > width*2/3f || v.y < height/3f || v.y > height*2/3f)
+        if (v.x < width / 3f || v.x > width * 2 / 3f || v.y < height / 3f || v.y > height * 2 / 3f)
             return offset(v1, v2, 1);
         return v;
     }
 
     public PVector offset(PVector v1, PVector v2, int depth) {
-        float difficulty = 7.5f;
+        float difficulty = 5f;
         PVector v = PVector.add(v1, v2).div(2);
         v.add(PVector.sub(v1, v2).rotate((float) Math.PI / 2).div(difficulty).mult((float) (Math.random() * 2 - 1)));
-        if(depth > 60)
+        if (depth > 60)
             return null;
-        if(v.x < width/3f || v.x > width*2/3f || v.y < height/3f || v.y > height*2/3f)
+        if (v.x < width / 3f || v.x > width * 2 / 3f || v.y < height / 3f || v.y > height * 2 / 3f)
             return offset(v1, v2, depth + 1);
         return v;
     }
@@ -327,5 +327,9 @@ public class Track implements Serializable {
             }
         }
         return lowestCheckPoint.copy();
+    }
+
+    public PVector randomCheckPoint() {
+        return checkPoints.get(randomCheckPointIndex).originPoint.copy();
     }
 }

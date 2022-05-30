@@ -36,27 +36,30 @@ public class Car implements Serializable {
     public int target;
     LinearFormula targetFormula;
 
-    public Car(float x, float y, float size, float maxSpeed, float maxForce, Track t) {
-        this.pos = new PVector(x, y);
-        this.vel = new PVector(0, 0);
-        this.acc = new PVector(0, 0);
-        this.size = size;
-        this.maxSpeed = maxSpeed;
-        this.maxForce = maxForce;
-        track = t;
-        // rotation = getRotation(targetFormula);
-    }
+    // public Car(float x, float y, float size, float maxSpeed, float maxForce, Track t) {
+    //     this.pos = new PVector(x, y);
+    //     this.vel = new PVector(0, 0);
+    //     this.acc = new PVector(0, 0);
+    //     this.size = size;
+    //     this.maxSpeed = maxSpeed;
+    //     this.maxForce = maxForce;
+    //     track = t;
+    //     // rotation = getRotation(targetFormula);
+    // }
 
     public Car(float size, float maxSpeed, float maxForce, Track t) {
-        this.pos = t.lowestCheckPoint();
+        int randIndex = t.randomCheckPointIndex;
+        this.pos = t.checkPoints.get(randIndex).originPoint.copy();
         this.vel = new PVector(0, 0);
         this.acc = new PVector(0, 0);
         this.size = size;
         this.maxSpeed = maxSpeed;
         this.maxForce = maxForce;
-        rotation = (float) Math.PI;
+        PVector augh = PVector.sub(t.checkPoints.get(randIndex < t.checkPoints.size() - 1 ? randIndex + 1: 0).originPoint.copy(), pos);
+        this.rotation = (float) Math.atan2(augh.y, augh.x);
         track = t;
-        target = t.lowestCheckPointIndex + 2 < t.checkPoints.size() ? t.lowestCheckPointIndex + 2 : 1;
+        int ind = t.randomCheckPointIndex;
+        target = ind + 2 < t.checkPoints.size() ? ind + 2 : 1;
         targetFormula = track.checkPoints.get(target);
         sight = new LinearFormula[5];
         // rotation = getRotation(track.checkPoints.get(0));
@@ -66,7 +69,11 @@ public class Car implements Serializable {
         if (tf == null) {
             return 0;
         }
-        return ((float) Math.atan(tf.m) + (float) Math.PI / 2) + (float) (tf.m < 0 ? 0 : Math.PI);
+        // return ((float) Math.atan(tf.m) + (float) Math.PI / 2) * (float) (tf.m < 0 ? -1 : 1);
+        float ang = (float) Math.atan(tf.m) + (float) Math.PI / 2;
+        // System.out.println(ang);
+        ang = (tf.originPoint.y > tf.b ? ang * -1 : ang);
+        return ang;
     }
 
     public void update(float throttle, float steering) {
@@ -97,7 +104,7 @@ public class Car implements Serializable {
 
         float traction = .15f;
         if (vel.mag() > maxSpeed * 0.666f) {
-            traction = 0.025f;
+            traction = 0.075f;
         }
         vel.lerp(PVector.fromAngle(rotation).setMag(vel.mag()), traction).setMag(vel.mag());
         vel.mult(1 - friction);
@@ -120,9 +127,9 @@ public class Car implements Serializable {
 
     private void clampRotation() {
         if (rotation < -Math.PI) {
-            rotation = (float) Math.PI;
+            rotation += (float) Math.PI * 2;
         } else if (rotation > Math.PI) {
-            rotation = (float) -Math.PI;
+            rotation += (float) -Math.PI * 2;
         }
     }
 
@@ -250,6 +257,12 @@ public class Car implements Serializable {
         p.fill(255, 0, 0);
         p.rectMode(PConstants.CENTER);
         p.rect(0, 0, size, size / 2);
+        // p.beginShape();
+        // p.vertex(0, 0);
+        // p.vertex(-size/2, -size/2);
+        // p.vertex(0, size);
+        // p.vertex(size/2, -size/2);
+        // p.endShape();
 
         p.rotate(-rotation);
 

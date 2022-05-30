@@ -6,6 +6,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 import com.example.Game.Car;
+import com.example.Game.GameConfig;
 import com.example.Game.Track;
 import com.example.NEAT.Population.CarActor;
 import com.example.NEAT.Population.Population;
@@ -57,18 +58,18 @@ public class CarNeat extends PApplet {
 
     @Override
     public void settings() {
-        size(1000, 800);
+        size(GameConfig.WIDTH, GameConfig.HEIGHT);
     }
 
     @Override
     public void setup() {
-        track = new Track(1, this);
         CarActor.app = this;
+        track = new Track(this);
         track.display(this);
         car = new Car(15, 5f, 0.25f, track);
         car.pos = new PVector(width/2, height/2);
-        // newPopulation(200);
-        loadPopulation("2022.04.21.15.44.57");
+        newPopulation(500);
+        // loadPopulation("2022.04.21.15.44.57");
         nd = new NetworkDisplay(width - 20, height / 4);
     }
 
@@ -110,7 +111,7 @@ public class CarNeat extends PApplet {
             if (ca == null) {
                 CarActor.nextTrack = new Track(this);
                 track = CarActor.nextTrack;
-                pop.generation();
+                pop.epoch();
                 break;
             }
         }

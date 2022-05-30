@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.nio.channels.CancelledKeyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +29,7 @@ public class Population<E extends Actor> implements Iterable<E> {
     int populationSize;
     int generation;
     public E best;
+    public int epoch;
     boolean save = Config.save;
 
     public Population(Collection<E> founders) {
@@ -55,6 +57,7 @@ public class Population<E extends Actor> implements Iterable<E> {
     }
 
     public E alive() {
+        actors.remove(null);
         for (E e : actors) {
             if (e.alive) {
                 return e;
@@ -66,6 +69,9 @@ public class Population<E extends Actor> implements Iterable<E> {
     public void generation() {
         generation++;
         calculateFitness();
+        for (E e : actors) {
+            e.normalizeFitness();
+        }
         sortSpecies(actors);
         TreeSet<Species<E>> good = new TreeSet<>();
         int preCull = species.size();
@@ -122,6 +128,19 @@ public class Population<E extends Actor> implements Iterable<E> {
         //     spec.members.remove(spec.representative);
         // }
     }
+
+    public void epoch(){
+        if(epoch > Config.epochsPerBatch){
+            epoch = 0;
+            generation();
+            return;
+        }
+        calculateFitness();
+        for (E e : actors) {
+            e.epoch();
+        }
+        epoch++;
+   }
 
     private void calculateFitness() {
         for (E e : actors) {

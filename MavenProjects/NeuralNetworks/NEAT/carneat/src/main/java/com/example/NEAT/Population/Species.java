@@ -18,8 +18,8 @@ public class Species<E extends Actor> implements Comparable<Species> {
     public Species(E rep) {
         representative = (E) rep.clone();
         members.add(representative);
-        bestFitness = representative.fitness;
-        averageFitness = representative.fitness;
+        bestFitness = representative.batchFitness;
+        averageFitness = representative.batchFitness;
     }
 
     public boolean add(E interloper) {
@@ -109,14 +109,14 @@ public class Species<E extends Actor> implements Comparable<Species> {
             if (members.size() > 1)
                 members.pollFirst();
         }
-        if (members.getFittest().fitness > representative.fitness)
+        if (members.getFittest().batchFitness > representative.batchFitness)
             representative = (E)members.getFittest().clone();
     }
 
     public void calcFitValues() {
         if (size() > 0) {
             averageFitness = members.averageFitness();
-            double tempFitness = members.getFittest().fitness;
+            double tempFitness = members.getFittest().batchFitness;
             bestGenerationFitness = tempFitness + Math.random() / 10000;
             if (tempFitness < bestFitness) {
                 stale++;
@@ -149,7 +149,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
     private E reproduce() {
         E top = getRandom();
         E bottom = getRandom();
-        if (bottom.fitness > top.fitness) {
+        if (bottom.batchFitness > top.batchFitness) {
             E temp = top;
             top = bottom;
             bottom = temp;
@@ -161,7 +161,7 @@ public class Species<E extends Actor> implements Comparable<Species> {
         try {
             E top = getRandom();
             E bottom = other.getRandom();
-            if (bottom.fitness > top.fitness) {
+            if (bottom.batchFitness > top.batchFitness) {
                 E temp = top;
                 top = bottom;
                 bottom = temp;

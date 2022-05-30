@@ -6,7 +6,8 @@ import com.example.NEAT.Network.Genes.Genome;
 
 public abstract class Actor implements Comparable<Actor>, Serializable{
     public Genome brain;
-    public double fitness;
+    protected double epochFitness;
+    public double batchFitness;
     public boolean resetAfterRun;
     public boolean alive = true;
     public int[] inputs;
@@ -29,10 +30,14 @@ public abstract class Actor implements Comparable<Actor>, Serializable{
 
     public abstract double calculateFitness();
 
+    public abstract void normalizeFitness();
+
+    public abstract void epoch();
+
     public abstract Actor clone();
 
     @Override
     public int compareTo(Actor o) {
-        return ((Double) fitness).compareTo(o.fitness);
+        return ((Double) batchFitness).compareTo(o.batchFitness);
     }
 }
