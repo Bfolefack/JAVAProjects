@@ -52,7 +52,7 @@ public class DoubleCart implements Serializable{
     public float cartAcc;
 
     public DoubleCart() {
-        poles = new Pole[]{new Pole(2, 0.2f), new Pole(5, 0.6f)};
+        poles = new Pole[]{new Pole(2, 0.1f), new Pole(4, 0.2f)};
         for (int i = 0; i < poles.length; i++) {
             poles[i].polePos = (float) (Math.PI + (Math.random()-0.5) * variability);
         }

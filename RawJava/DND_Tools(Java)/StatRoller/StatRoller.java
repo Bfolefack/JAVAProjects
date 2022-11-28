@@ -8,10 +8,12 @@ class StatRoller {
 		// Scanner scan = new Scanner(System.in);
 		System.out.println("How many arrays would you like to generate?");
 		// int statCount = scan.nextInt();
-		System.out.println("The Changeling:" + statString());
-		System.out.println("Raine Giantsbane:" + statString());
-		System.out.println("King Altheran Tractaurrum Solis:" + statString());
-		System.out.println("Karsus:" + statString());
+		System.out.println("Chloe:" + statString());
+		System.out.println("Kioni:" + statString());
+		System.out.println("Neema:" + statString());
+		System.out.println("Koze:" + statString());
+		System.out.println("Courtney:" + statString());
+		System.out.println("Tarp Guy:" + statString());
 		// for(int i = 0; i < statCount; i++){
 		// 	System.out.println(statString());	
 		// }

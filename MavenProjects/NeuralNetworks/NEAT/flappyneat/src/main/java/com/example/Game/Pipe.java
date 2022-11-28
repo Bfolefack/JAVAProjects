@@ -5,7 +5,7 @@ import processing.core.PApplet;
 public class Pipe implements Comparable<Pipe>{
     public float height;
     public Float xPos;
-    public static int pipeGap = 150;
+    public static int pipeGap = 350;
     public static int pipeWidth = 25;
     public Pipe(float h, float x){
         height = h;
