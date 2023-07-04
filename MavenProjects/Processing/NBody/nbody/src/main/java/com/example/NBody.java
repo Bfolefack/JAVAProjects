@@ -16,7 +16,7 @@ import processing.event.MouseEvent;
  */
 public class NBody extends PApplet {
     public static float simulationSpeed = 1000;
-    public static final float gravitationalConstant = 0.000667f * (float) Math.pow(simulationSpeed, 2);
+    public static final float G = 0.000667f * (float) Math.pow(simulationSpeed, 2);
     public static int truMouseX;
     public static int truMouseY;
     
@@ -33,12 +33,13 @@ public class NBody extends PApplet {
 
     @Override
     public void settings() {
-        size(1000, 800, P2D);
+        fullScreen();
     }
 
     @Override
     public void setup() {
-        solar = new Orbital(this, SystemLibrary.randomSys(1), 100);
+        //solar = new Orbital(this, SystemLibrary.randomSys(1), 1000);
+        solar = new Orbital(this, SystemLibrary.solar);
         Zoomer.initialize(1f, this);
         noStroke();
     }
@@ -49,6 +50,7 @@ public class NBody extends PApplet {
         fill(255);
         Zoomer.mousePan();
         Zoomer.pushZoom();
+        if(speed > 0)
         if (speed > 1)
             for (int i = 0; i < speed; i++) {
                 solar.update();
@@ -58,9 +60,12 @@ public class NBody extends PApplet {
         }
         solar.display(this);
         Zoomer.popZoom();
-        text(frameRate, 0, 10);
-        text(solar.planetSet.size(), 0, 20);
-        text(speed, 0, 30);
+
+        float textSize = 50;
+        textSize(textSize);
+        text("Framerate: " + frameRate, 0, textSize * 1.f);
+        text("Planets: " + solar.planetSet.size(), 0, textSize * 2.f);
+        text("Speed: " + speed, 0, textSize * 3.f);
         // System.out.println(frameCount);
     }
 
@@ -78,9 +83,9 @@ public class NBody extends PApplet {
         if (key == '.')
             speed -= 5;
         if (key == ';')
-            simulationSpeed += 1;
+            speed += 1;
         if (key == 'l')
-            simulationSpeed -= 1;
+            speed -= 1;
         if (key == 's')
             solar.update();
     }

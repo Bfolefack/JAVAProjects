@@ -15,10 +15,12 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import com.example.NEAT.Network.Genes.Genome;
 import com.example.NEAT.Utils.Config;
 
 public class Population<E extends Actor> implements Iterable<E> {
@@ -27,7 +29,7 @@ public class Population<E extends Actor> implements Iterable<E> {
     double bestFitness;
     double highScoreFitness;
     int populationSize;
-    int generation;
+    public int generation;
     public E best;
     public int epoch;
     boolean save = Config.save;
@@ -46,7 +48,7 @@ public class Population<E extends Actor> implements Iterable<E> {
         species = new TreeSet<>();
         actors = new HashSet<>();
         actors.addAll(founders);
-        sortSpecies(actors);
+        //sortSpecies(actors);
     }
 
     public void act() {
@@ -130,8 +132,8 @@ public class Population<E extends Actor> implements Iterable<E> {
     }
 
     public void epoch(){
-        if(epoch > Config.epochsPerBatch){
-            epoch = 0;
+        if(epoch >= Config.epochsPerBatch){
+            epoch = 1;
             generation();
             return;
         }

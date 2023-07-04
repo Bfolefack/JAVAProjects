@@ -10,6 +10,7 @@ import com.example.Game.GameConfig;
 import com.example.Game.Track;
 import com.example.NEAT.Population.CarActor;
 import com.example.NEAT.Population.Population;
+import com.example.NEAT.Utils.Config;
 import com.example.NEAT.Utils.NetworkDisplay;
 
 import processing.core.PApplet;
@@ -28,7 +29,7 @@ public class CarNeat extends PApplet {
     public static Population<CarActor> pop;
 
     NetworkDisplay nd;
-    int speed = 1;
+    int speed = 0;
 
     public static class Save extends Thread {
         CarNeat fb;
@@ -58,7 +59,8 @@ public class CarNeat extends PApplet {
 
     @Override
     public void settings() {
-        size(GameConfig.WIDTH, GameConfig.HEIGHT);
+        fullScreen();
+        //size(GameConfig.WIDTH, GameConfig.HEIGHT);
     }
 
     @Override
@@ -69,8 +71,9 @@ public class CarNeat extends PApplet {
         car = new Car(15, 5f, 0.25f, track);
         car.pos = new PVector(width/2, height/2);
         newPopulation(500);
-        // loadPopulation("2022.04.21.15.44.57");
         nd = new NetworkDisplay(width - 20, height / 4);
+        
+        //loadPopulation("2022.12.05.22.15.12");
     }
 
     private void loadPopulation(String string) {
@@ -91,8 +94,13 @@ public class CarNeat extends PApplet {
     @Override
     public void draw() {
         track.display(this);
-        textSize(10);
-        text((int) frameRate, 20, height - 10);
+        textSize(50);
+        textAlign(BOTTOM, LEFT);
+        fill(0);
+        text("Framerate: " + (int) frameRate, 0, height);
+        text("Generation: " + pop.generation, 0, height - 50);
+        
+        text("Epoch: " + pop.epoch + "/" + Config.epochsPerBatch, 0, height - 100);
 
         // playerControl();
 

@@ -15,7 +15,7 @@ public class Population {
     private QuadTree qt;
     private Map<String, HashSet<Boid>> map;
     public int method = 0;
-    private int boidSize = 5;
+    private int boidSize = 10;
     private int hashSize;
     public boolean showTree;
 

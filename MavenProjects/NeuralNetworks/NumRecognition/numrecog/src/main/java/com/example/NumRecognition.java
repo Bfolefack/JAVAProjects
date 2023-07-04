@@ -77,32 +77,32 @@ public class NumRecognition extends PApplet {
             e.printStackTrace();
         }
         System.out.println("Training Network");
-        try {
-            nn = NeuralNetwork.load("src/data/Network.nn");
-        } catch (Exception e) {
-            //TODO: handle exception
-        }
-        // nn = new NeuralNetwork(784, 400, 10, 2, 0.03);
-        // nn.learningRate = 0.005;
-        int count = 0;
-        // while(true){
-        //     count++;
-        //     double err = 0;
-        //     for (int j = 0; j < 600; j++) {
-        //         int rand = (int) (Math.random() * numbers.size());
-        //         Num num = numbers.get(rand);
-        //         err += nn.train(num.pixels, Num.toIntArr(num.identifier));
-        //     }
-        //     err /= 600;
-        //     System.out.println("Generation: " + (count));
-        //     System.out.println("Absolute Error: " + err);
-        //     System.out.println();
-        //     if (err < 0) {
-        //         break;
-        //     }
+        // try {
+        //     nn = NeuralNetwork.load("src/data/Network.nn");
+        // } catch (Exception e) {
+        //     //TODO: handle exception
         // }
+        nn = new NeuralNetwork(784, 400, 10, 2, 0.03);
+        nn.learningRate = 0.005;
+        int count = 0;
+        while(true){
+            count++;
+            double err = 0;
+            for (int j = 0; j < 600; j++) {
+                int rand = (int) (Math.random() * numbers.size());
+                Num num = numbers.get(rand);
+                err += nn.train(num.pixels, Num.toIntArr(num.identifier));
+            }
+            err /= 600;
+            System.out.println("Generation: " + (count));
+            System.out.println("Absolute Error: " + err);
+            System.out.println();
+            if (err < 0.03) {
+                break;
+            }
+        }
         try {
-            nn.save("src/data/");
+            nn.save("src/data/Network2");
         } catch (Exception e) {
             e.printStackTrace();
         }

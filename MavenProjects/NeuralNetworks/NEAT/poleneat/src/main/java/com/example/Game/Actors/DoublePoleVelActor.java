@@ -15,6 +15,8 @@ public class DoublePoleVelActor extends Actor {
     public boolean alive;
     transient NetworkDisplay nd;
     public boolean displayed;
+    public boolean displayNetwork;
+    int count = 0;
 
     public DoublePoleVelActor(Genome b) {
         super(b);
@@ -37,24 +39,40 @@ public class DoublePoleVelActor extends Actor {
     @Override
     public void act() {
         if (alive) {
-            // double[] in = new double[]{cart.cartVel * 10, cart.poleVel * 10};
-            // double[] in = new double[]{cart.cartPos / 5, cart.polePos - Math.PI};
-            double[] in = new double[] {cart.poles[0].polePos - Math.PI,/* cart.poles[0].poleVel * 10, */
-                                        cart.poles[1].polePos - Math.PI,/* cart.poles[1].poleVel * 10,  */
-                                        cart.cartPos / 5 /*, cart.cartVel * 10  */
-            };
-            
-            float out = (float) brain.feedForward(in)[0];
-            if(out > 1){
-                out = 1;
-            } else if(out < -1){
-                out = -1;
-            }
-            cart.update((float)(out));
-            fitness++;
-            for (int i = 0; i < cart.poles.length; i++) {
-                if (cart.poles[i].polePos < Math.PI / 2f || cart.poles[i].polePos > 3 * Math.PI / 2 || Math.abs(cart.cartPos) > 5)
-                alive = false;
+            count++;
+            if(count % 1 == 0){
+                // double[] in = new double[]{cart.cartVel * 10, cart.poleVel * 10};
+                // double[] in = new double[]{cart.cartPos / 5, cart.polePos - Math.PI};
+                double[] in = new double[] {cart.poles[0].polePos - Math.PI,/* cart.poles[0].poleVel * 10, */
+                                            cart.poles[1].polePos - Math.PI,/* cart.poles[1].poleVel * 10,  */
+                                            cart.cartPos / 5 /*, cart.cartVel * 10  */
+                };
+                
+                float out = (float) brain.feedForward(in)[0];
+                if(out > 0 && out < 0.05){
+                    out = 0.05f;
+                } else if(out < 0 && out > -0.05){
+                    out = -0.05f;
+                }
+                if(out > 1){
+                    out = 1;
+                } else if(out < -1){
+                    out = -1;
+                }
+                cart.update((float)(out + (Math.random()/100)));
+                fitness++;
+                for (int i = 0; i < cart.poles.length; i++) {
+                    if (cart.poles[i].polePos < Math.PI / 2f || cart.poles[i].polePos > 3 * Math.PI / 2 || Math.abs(cart.cartPos) > 5)
+                    alive = false;
+                }
+                
+            } else {
+                cart.update((float)(Math.random()/100));
+                fitness++;
+                for (int i = 0; i < cart.poles.length; i++) {
+                    if (cart.poles[i].polePos < Math.PI / 2f || cart.poles[i].polePos > 3 * Math.PI / 2 || Math.abs(cart.cartPos) > 5)
+                    alive = false;
+                }
             }
         }
     }
@@ -74,12 +92,13 @@ public class DoublePoleVelActor extends Actor {
         app.fill(255);
         app.strokeWeight(2);
         cart.display(app);
-
-        if (nd == null) {
-            nd = new NetworkDisplay(350, 200);
+        if(displayNetwork){
+            if (nd == null) {
+                nd = new NetworkDisplay(350, 200);
+            }
+            nd.updateGenome(brain);
+            nd.display(app, cart.cartPos * 100 + app.width / 2 - 175, app.height / 2);
         }
-        nd.updateGenome(brain);
-        nd.display(app, cart.cartPos * 100 + app.width / 2 - 175, app.height / 2);
         displayed = true;
     }
 

@@ -96,21 +96,21 @@ public class Planet extends Entity {
                             float dist = (PVector.dist(newPlanet.pos, p.pos));
                             if (dist < size / 2 + p.size / 2 && !p.collided) {
                                 if (mass > p.mass){
-                                    return collide(this, p);
+                                    //return collide(this, p);
                                 }
 
                             }
                             if (colliders.size() < 1) {
                                 dist = (dist < 10 ? 10 : dist);
                                 newPlanet.acc.add(PVector.sub(p.pos, newPlanet.pos)
-                                        .setMag(((NBody.gravitationalConstant * newPlanet.mass * p.mass)
+                                        .setMag(((NBody.G * newPlanet.mass * p.mass)
                                                 / (dist * dist))
                                                 / newPlanet.mass));
                             }
                         }
             }
             if (colliders.size() > 0) {
-                return collide(colliders);
+                //return collide(colliders);
             }
             newPlanet.vel.add(newPlanet.acc);
             newPlanet.pos.add(newPlanet.vel);

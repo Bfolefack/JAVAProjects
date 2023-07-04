@@ -64,7 +64,7 @@ public class FlappyNeat extends PApplet {
         for (int i = 0; i < 1000; i++) {
             fa.add(new FlappyActor(false));
         }
-        pop = new Population<>(fa);
+        pop = new Population<>("2022.01.27.15.14.49");
         
         // pop = new Population<>("NotATest");
         // pop = new Population<>("Test0");

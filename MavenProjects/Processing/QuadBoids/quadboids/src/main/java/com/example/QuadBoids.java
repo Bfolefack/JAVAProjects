@@ -18,7 +18,7 @@ public class QuadBoids extends PApplet {
     }
 
     public void settings() {
-        size(1500, 700);
+        fullScreen();
         smooth(3);
     }
 

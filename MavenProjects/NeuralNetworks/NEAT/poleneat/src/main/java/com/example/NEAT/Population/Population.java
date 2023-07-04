@@ -23,7 +23,7 @@ public class Population<E extends Actor> implements Iterable<E> {
     double bestFitness;
     double highScoreFitness;
     int populationSize;
-    int generation;
+    public int generation;
     public E best;
     boolean save = Config.save;
 

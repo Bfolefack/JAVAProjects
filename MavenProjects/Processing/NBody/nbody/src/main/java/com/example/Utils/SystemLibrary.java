@@ -2,6 +2,7 @@ package com.example.Utils;
 
 import java.util.ArrayList;
 
+import com.example.NBody;
 import com.example.System.Planet;
 
 import processing.core.PVector;
@@ -41,12 +42,18 @@ public class SystemLibrary {
         ArrayList<Planet> out = new ArrayList<>();
         Planet star = new Planet(0, 0, 0, 0, kiloToYottaPlus6(1 + (Math.random() * 0.1) *  1e30));
         out.add(star);
-        for(int i = 0; i < 1000; i++){
+        for(int i = 0; i < 100; i++){
             double dist = Math.random() *  1000000000 * range;
             double angle = Math.random() * Math.PI * 2;
             double mass = Math.pow(10, 16 + Math.pow(Math.random(), 2) * 4);
             PVector pos = new PVector((float)(dist * Math.cos(angle)), (float)(dist * Math.sin(angle)));
-            out.add(new Planet(pos.x/100000, pos.y/100000, 0, 0, kiloToYotta(mass)));
+            double velMag = Math.sqrt((star.mass + kiloToYotta(mass))* NBody.G / (dist)) * 500 * Math.random();
+
+            System.out.println(velMag);
+            PVector vel = new PVector((float)(velMag * Math.sin(angle)), (float)(velMag * Math.cos(angle)));
+            Planet plan = new Planet(pos.x/100000, pos.y/100000, 0, 0, kiloToYotta(mass));
+            plan.vel = vel;
+            out.add(plan);
         }
         return out;
     }

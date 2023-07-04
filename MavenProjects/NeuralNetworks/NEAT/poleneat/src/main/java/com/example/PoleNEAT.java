@@ -2,6 +2,8 @@ package com.example;
 
 import java.util.HashSet;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.example.Game.DoubleCart;
 import com.example.Game.Actors.DoublePoleVelActor;
 import com.example.Game.Actors.SinglePoleVelActor;
@@ -20,7 +22,7 @@ public class PoleNEAT extends PApplet {
     // BasicCartSolver bcs;
     Population<DoublePoleVelActor> pop;
     public static int display = 2;
-    public int speed = 1;
+    public int speed = 0;
 
     public static class Save extends Thread {
         PoleNEAT fb;
@@ -51,11 +53,12 @@ public class PoleNEAT extends PApplet {
     @Override
     public void settings() {
 
-        size(1000, 1000);
+        //size(1000, 1000);
         // cart = new Cart(0, PI + (float)(Math.random() * 0.0001f));
         // bcs = new BasicCartSolver(1000);
+        fullScreen();
         HashSet<DoublePoleVelActor> hs = new HashSet<>();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             hs.add(new DoublePoleVelActor(3, 1, false));
         }
         // dc = new DoubleCart();
@@ -78,6 +81,10 @@ public class PoleNEAT extends PApplet {
             // dc.update(0);
             neatUpdate();
         }
+        fill(0);
+        textSize(30);
+        textAlign(LEFT, TOP);
+        text("Generation: " + pop.generation, 10, 0);
         // dc.display(this);
         // bcs.displayed = false;
         // cart.update((frameCount % 30 - 15)/7f);
@@ -108,12 +115,19 @@ public class PoleNEAT extends PApplet {
                         display = 2;
                         break;
                     case 2:
+                        display = 3;
+                        break;
+                    case 3:
                         display = 0;
                         break;
                 }
                 break;
             case 'r':
                 speed = 1;
+                display = 2;
+                break;
+            case 'g':
+                pop.generation();
                 break;
         }
         if (speed < 0) {
@@ -125,20 +139,39 @@ public class PoleNEAT extends PApplet {
         boolean anyAlive = false;
         pop.act();
         DoublePoleVelActor.app = this;
+        int aliveCount = 0;
+        DoublePoleVelActor last = null;
         for (DoublePoleVelActor DPVA : pop) {
+            
             if (DPVA.alive) {
+                aliveCount++;
                 switch (PoleNEAT.display) {
                     case 1:
-                        if (!anyAlive && !DPVA.displayed)
+                        if (!anyAlive && !DPVA.displayed){
                             DPVA.display();
+                            DPVA.displayNetwork=true;
+                        }
                         break;
                     case 2:
-                        if (!DPVA.displayed)
+                        if (!DPVA.displayed){
                             DPVA.display();
+                            last = DPVA;
+                        }
+                    
+                        break;
+                    case 3:
+                        if (aliveCount < 10 && !DPVA.displayed){
+                            DPVA.display();
+                            DPVA.displayNetwork=true;
+                        }
                         break;
                 }
                 anyAlive = true;
             }
+        }
+        if(last != null){
+            last.displayNetwork=true;
+            last.display();
         }
         if (!anyAlive)
             pop.generation();

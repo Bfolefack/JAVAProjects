@@ -88,7 +88,7 @@ public class NetworkDisplay {
                 p.strokeWeight(2);
                 p.stroke(0);
                 p.fill(255 * (float) ((nd.value + 1) / 2));
-                p.ellipse(nd.x, nd.y, height / (tallestLayer * 2), height / (tallestLayer * 2));
+                p.ellipse(nd.x, nd.y, height / (tallestLayer * 1.25f), height / (tallestLayer * 1.25f));
                 if (showText) {
                     if (nd.value > 0) {
                         p.fill(0);
@@ -97,9 +97,9 @@ public class NetworkDisplay {
                     }
                     // System.out.println(nd.value);
                     if((nd.value + "").length() > 4){
-                        p.text((nd.value + "").substring(0, 4), nd.x, nd.y);
+                        //p.text((nd.value + "").substring(0, 4), nd.x, nd.y);
                     } else{
-                        p.text(nd.value + "", nd.x, nd.y);
+                        //p.text(nd.value + "", nd.x, nd.y);
                     }
                 }
             }
