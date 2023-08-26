@@ -70,10 +70,10 @@ public class CarNeat extends PApplet {
         track.display(this);
         car = new Car(15, 5f, 0.25f, track);
         car.pos = new PVector(width/2, height/2);
-        newPopulation(500);
+        //newPopulation(500);
         nd = new NetworkDisplay(width - 20, height / 4);
         
-        //loadPopulation("2022.12.05.22.15.12");
+        loadPopulation("2022.12.05.22.15.12");
     }
 
     private void loadPopulation(String string) {

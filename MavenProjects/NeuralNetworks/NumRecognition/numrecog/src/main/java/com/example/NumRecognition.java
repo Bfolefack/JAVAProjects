@@ -97,7 +97,7 @@ public class NumRecognition extends PApplet {
             System.out.println("Generation: " + (count));
             System.out.println("Absolute Error: " + err);
             System.out.println();
-            if (err < 0.03) {
+            if (err < 0.05) {
                 break;
             }
         }

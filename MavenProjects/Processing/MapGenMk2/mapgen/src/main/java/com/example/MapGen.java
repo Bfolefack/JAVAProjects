@@ -6,15 +6,14 @@ import processing.core.PApplet;
  * Hello world!
  *
  */
-public class WarpedGlobeExperiments extends PApplet
+public class MapGen extends PApplet
 {
     long seed;
     OpenSimplexNoise noise;
-    Grid griddle;
     public static void main( String[] args )
     {
         String[] processingArgs = { "MySketch" };
-        WarpedGlobeExperiments mySketch = new WarpedGlobeExperiments();
+        MapGen mySketch = new MapGen();
         try {
             PApplet.runSketch(processingArgs, mySketch);
         } catch (Exception e) {
@@ -24,7 +23,7 @@ public class WarpedGlobeExperiments extends PApplet
     }
 
     public void settings(){
-        width = 2000;
+        width = 1000;
         size(width, width/2);
     }
 
@@ -34,16 +33,13 @@ public class WarpedGlobeExperiments extends PApplet
         //seed = 467221216;
         noise = new OpenSimplexNoise(seed);
         println(seed);
-        
-         
-        griddle = new Grid(0, 0, width, height, this);
 
         noStroke();
         fill(0);
       }
 
       public void draw () {
-        griddle.update();
+        
     }
 
     public void mousePressed() {
